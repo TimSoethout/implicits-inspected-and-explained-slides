@@ -1,0 +1,86 @@
+/**
+ * ING theme for reveal.js.
+ *
+ * Copyright (C) 2015 Frank Wijmans & Tim Soethout ING BANK
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+// Include theme-specific fonts
+@import url(../../lib/font/ing-rockwell/rockwell.css);
+@import url(../../lib/font/ing-me/ing-me.css);
+
+// ING Colors
+$ingOrange: rgb(255,98,0);
+$ingLightGrey: rgb(168,168,168);
+$ingIndigo: rgb(82,81,153);
+$ingSky: rgb(96,166,218);
+$ingFuchsia: rgb(171,0,102);
+$ingLime: rgb(208,217,60);
+$ingLeaf: rgb(52,150,81);
+$ingMidGrey: rgb(118,118,118);
+$ingText: rgb(51,51,51);
+
+// Override theme settings (see ../template/settings.scss)
+$backgroundColor: rgb(255,255,255);
+
+$mainColor: $ingText;
+$headingColor: $ingOrange;
+
+$mainFontSize: 38px;
+$mainFont: 'INGMe', 'Rockwell', Helvetica, sans-serif;
+$headingFont: 'INGMe', 'Rockwell', Helvetica, sans-serif;
+$headingTextShadow: none;
+$headingLetterSpacing: normal;
+$headingTextTransform: normal;
+$headingFontWeight: 700;
+$linkColor: $ingIndigo;
+$linkColorHover: lighten( $linkColor, 15% );
+$selectionBackgroundColor: lighten( $linkColor, 25% );
+
+$heading1Size: 2.5em;
+$heading2Size: 1.6em;
+$heading3Size: 1.3em;
+$heading4Size: 1.0em;
+
+section.has-dark-background {
+	&, h1, h2, h3, h4, h5, h6 {
+		color: #fff;
+	}
+}
+
+.reveal .footer {
+
+  display:inline-block;
+  position:absolute;
+  bottom: 0;
+  margin: 0 0 0 15%;
+  height: 10%;
+  width: 70%;
+
+  border: 1px solid $ingLightGrey;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.reveal .footer div {
+  margin-top:20px;
+  margin-left: 15px;
+  margin-right: 15px;
+  font-size: 0.7em;
+
+  padding-right:100px;
+  background: rgba(255,255,255,0.9) url('../lib/image/ING.png') no-repeat center center;
+  background-size: 100px;
+}
+
+
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------

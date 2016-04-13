@@ -1,0 +1,33 @@
+@font-face {
+    font-family: 'Rockwell';
+    src: url('rockwell-regular.woff') format('woff');
+
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Rockwell';
+    src: url('rockwell-bold.woff') format('woff');
+
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Rockwell';
+    src: url('rockwell-light.woff') format('woff');
+
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ING Icons';
+    src: url('ing-icons-v3-12.woff') format('woff');
+
+    font-weight: normal;
+    font-style: normal;
+}
+
+

@@ -1,0 +1,40 @@
+@font-face {
+  font-family: 'INGMe';
+  src: url('INGMeWeb-Regular.woff') format('woff');
+  src: url('INGMeWeb-Regular.eot?#iefix' format('embedded-opentype')),
+   url('INGMeWeb-Regular.woff2') format('woff2'),
+   url('INGMeWeb-Regular.woff') format('woff'),
+   url('INGMeWeb-Regular.ttf') format('truetype'),
+   url('INGMeWeb-Regular.svg') format('svg');
+}
+@font-face {
+  font-family: 'INGMe';
+  src: url('INGMeWeb-Bold.woff') format('woff');
+  src: url('INGMeWeb-Bold.eot?#iefix' format('embedded-opentype')),
+   url('INGMeWeb-Bold.woff2') format('woff2'),
+   url('INGMeWeb-Bold.woff') format('woff'),
+   url('INGMeWeb-Bold.ttf') format('truetype'),
+   url('INGMeWeb-Bold.svg') format('svg');
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'INGMe';
+  src: url('INGMeWeb-BoldItalic.woff') format('woff');
+  src: url('INGMeWeb-BoldItalic.eot?#iefix' format('embedded-opentype')),
+   url('INGMeWeb-BoldItalic.woff2') format('woff2'),
+   url('INGMeWeb-BoldItalic.woff') format('woff'),
+   url('INGMeWeb-BoldItalic.ttf') format('truetype'),
+   url('INGMeWeb-BoldItalic.svg') format('svg');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'INGMe';
+  src: url('INGMeWeb-Italic.woff') format('woff');
+  src: url('INGMeWeb-Italic.eot?#iefix' format('embedded-opentype')),
+   url('INGMeWeb-Italic.woff2') format('woff2'),
+   url('INGMeWeb-Italic.woff') format('woff'),
+   url('INGMeWeb-Italic.ttf') format('truetype'),
+   url('INGMeWeb-Italic.svg') format('svg');
+  font-style: italic;
+}
