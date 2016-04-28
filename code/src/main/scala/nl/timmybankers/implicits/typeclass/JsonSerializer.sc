@@ -49,6 +49,9 @@ implicit class JsonSerializable[T](serializable: T)
 
 myAccount.toJson
 
+// This won't work because there are is no JsonWriter[Int] in scope
+//10.toJson
+
 // next
 
 object NicerSerializableModel {
@@ -61,11 +64,10 @@ object NicerSerializableModel {
   }
 
   implicit def jsonMap[K: JsonWriter, V: JsonWriter]: JsonWriter[Map[K, V]] = {
-    JsonWriter[Map[K, V]]((map: Map[K, V]) => {
-      val items = for {
-        (k, v) <- map
-      } yield s"${k.toJson} : ${v.toJson}"
-      s"{${items.mkString(",")}}"
+    JsonWriter((map: Map[K, V]) => {
+      val items = for {(k, v) <- map}
+        yield s"${k.toJson}: ${v.toJson}"
+      s"{${items.mkString(", ")}}"
     })
   }
 
@@ -82,6 +84,32 @@ Map("a" -> "1", "b" -> "2").toJson
 
 payment.toJson
 
-// This won't work
-//10.toJson
 
+// even more generic, using Product
+
+object GenericSerializableModel {
+  implicit def jsonProduct: JsonWriter[Product] = {
+    // bit of cheating here to get it working for Any
+    implicit val anyProduct: JsonWriter[Any] = JsonWriter(any => any.toString)
+    JsonWriter(product => {
+      val map = product.getClass.getDeclaredFields.map(_.getName) // all field names
+        .zip(product.productIterator.to).toMap // zipped with all values
+      map.mapValues(_.toJson).toJson
+    })
+  }
+}
+
+case class Person(firstName: String, lastName: String, age: Int)
+
+val person = Person("Tim", "Soethout", 27)
+
+person.isInstanceOf[Product]
+
+import GenericSerializableModel._
+
+jsonProduct.toJsonString(person)
+
+
+// due to bugs in worksheet we have to be a bit more explicit about this
+// TODO: find out why
+person.asInstanceOf[Product].toJson
