@@ -8,13 +8,6 @@ val myAccount = Model.Account("My Account", 1000)
 val yourAccount = Model.Account("Your Account", 2000)
 val payment = Model.Payment(myAccount, yourAccount, 500)
 
-// how to show this?
-/*
-first inline (now)
-then with implicit class
-or implicit conversions a la spray json
-then circe?
- */
 object ModelSerializer {
   trait JsonWriter[T] {
     def toJsonString(value: T): String
@@ -38,6 +31,9 @@ object ModelSerializer {
 }
 
 import ModelSerializer._
+
+val accountWriter = implicitly[JsonWriter[Model.Account]]
+accountWriter.toJsonString(myAccount)
 
 implicit class JsonSerializable[T](serializable: T)
                                   (implicit serializer: JsonWriter[T]) {
@@ -68,6 +64,8 @@ object NicerSerializableModel {
       s"{${items.mkString(", ")}}"
     })
   }
+
+  // :javap NicerSerializableModel, search for map
 
   implicit val jsonPayment: JsonWriter[Model.Payment] =
     JsonWriter[Model.Payment](payment =>
@@ -111,4 +109,6 @@ jsonProduct.toJsonString(person)
 // due to bugs in worksheet we have to be a bit more explicit about this
 // TODO: find out why
 // fix with shapeless HList?
-person.asInstanceOf[Product].toJson
+//person.toJson
+val personProduct : Product = person
+personProduct.toJson

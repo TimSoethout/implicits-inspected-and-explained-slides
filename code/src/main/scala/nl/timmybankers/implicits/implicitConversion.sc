@@ -1,9 +1,9 @@
 // amazing code examples
 import scala.language.implicitConversions
 
-def toString(i: Int): String = i.toString
+def makeString(i: Int): String = s"makeStringOutput: ${i.toString}"
 
-toString(1)
+makeString(1)
 
 case class Balance(i: Int)
 object Balance {
@@ -11,7 +11,7 @@ object Balance {
 }
 
 val balance = Balance(100)
-toString(balance)
+makeString(balance)
 
 // See with :javap
 def example : Int = balance
