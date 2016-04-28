@@ -122,6 +122,9 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					- More and more departments starting, also for data science
 
 					Note:
+					- ING
+						+ 52k employees worldwide, 40 countries
+						+ NL 150+ DevOps teams
 					- Monthly meetups
 					- Sponsors of ScalaDays Amsterdam (2015) and Berlin (2016)
 					- RAF, Coral, Calendar, Elements
@@ -142,11 +145,29 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						### What are implicits?
 
 						- A way to acquire/use values without explicitly referencing them
-						- Manifestations:
-							+ Implicit declarations (`implicit val`)
+							+ Implicit declarations
+							```scala
+							implicit val x```
 							+ Implicit conversions (a.k.a. Implicit views)
+							```scala
+							implicit def a2B(a : A) :B```
 							+ Implicit parameters
-						- Let's take a look
+							```scala
+							def method(implicit x : Int)```
+							+ Implicit classes
+							```scala
+							implicit class X(y: Int)```
+
+						Note:
+						- explain
+					</section>
+					<section data-markdown>
+						### Demo
+
+						+ Implicit declarations
+						+ Implicit conversions
+						+ Implicit parameters
+						+ Implicit classes
 
 					</section>
 					<section data-markdown>
@@ -154,7 +175,6 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 						Implicits are a powerful type system feature, but they should be used sparingly.
 						They have complicated resolution rules and make it difficult — by simple lexical examination — to grasp what is actually happening.
-
 
 					</section>
 					<section data-markdown>
@@ -174,24 +194,34 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 						Do not use implicits to do automatic conversions between similar datatypes (for example, converting a list to a stream); these are better done explicitly because the types have different semantics, and the reader should beware of these implications.
 					</section>
+					</section>
 
+					<section>
+						<section data-markdown>
+							## Scoping
+						</section>
 					<section data-markdown>
 						### Odersky Explains
 
-						1. First, we look for implicits that are visible either as locals or
-	as members of enclosing classes and packages or as imports - the
-	precise rule is that we should be able to access them using their name
-	only, without any prefix.
+						Lookup precedence:
+						1. Visible either as locals or as members of enclosing classes and packages or as imports -
+							by name only, without any prefix.
+						2. If not found, look in "implicit	scope": companion objects that bear some
+	relation to the type i.e.:
+							- companion object of the type itself,
+							- its parameters if any are given, and also of its supertype and supertraits;
 
-						2. If no implicits are found in step 1, we look in the "implicit
-	scope", which contains all sort of companion objects that bear some
-	relation to the type which we search for (i.e. companion object of the type itself, of its
-	parameters if any are given, and also of its supertype and supertraits; the importance
-	is to be as general as possible without reverting to whole program analysis like
-	Haskell does).
+								Note:
+								- the importance is to be as general as possible without reverting to whole program analysis like Haskell does).
 					</section>
 					<section data-markdown>
-						## Outline
+						### Demo
+
+						+ Scoping
+
+					</section>
+					<section data-markdown>
+						### Outline
 
 						- Manifestations of Implicits
 							+ Implicit conversions -> implicit views
