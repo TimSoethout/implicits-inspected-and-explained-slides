@@ -1,5 +1,3 @@
-
-
 object Model {
   type Amount = BigDecimal
   case class Account(name: String, balance: Amount)
@@ -64,7 +62,7 @@ object NicerSerializableModel {
   }
 
   implicit def jsonMap[K: JsonWriter, V: JsonWriter]: JsonWriter[Map[K, V]] = {
-    JsonWriter((map: Map[K, V]) => {
+      JsonWriter((map: Map[K, V]) => {
       val items = for {(k, v) <- map}
         yield s"${k.toJson}: ${v.toJson}"
       s"{${items.mkString(", ")}}"
@@ -112,4 +110,5 @@ jsonProduct.toJsonString(person)
 
 // due to bugs in worksheet we have to be a bit more explicit about this
 // TODO: find out why
+// fix with shapeless HList?
 person.asInstanceOf[Product].toJson
