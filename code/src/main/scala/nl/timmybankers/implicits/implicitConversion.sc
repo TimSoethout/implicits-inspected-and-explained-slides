@@ -1,5 +1,5 @@
 // amazing code examples
-import java.util
+
 
 import scala.language.implicitConversions
 
@@ -15,29 +15,33 @@ object Balance {
 val balance = Balance(100)
 toString(balance)
 
+// See with :javap
+def example : Int = balance
+
 
 // command + click
 // control + q
 1 to 10
 
-
 // JavaConversions
-val javaSet: util.List[Int] = java.util.Arrays.asList(1, 2, 3)
+import java.util
+
+val javaList: util.List[Int] = java.util.Arrays.asList(1, 2, 3)
 
 def someDefUsingList(list: scala.collection.mutable.Buffer[Int]) = {
-  // do something
+  println(list)
 }
 
 // Will not work
-//someDefUsingList(javaSet)
+//someDefUsingList(javaList)
 
 // with implicit conversions
 import scala.collection.JavaConversions._
 
-someDefUsingList(javaSet)
+someDefUsingList(javaList)
 
 
 // without Conversions, because they are evil
 import scala.collection.JavaConverters._
 
-someDefUsingList(javaSet.asScala)
+someDefUsingList(javaList.asScala)

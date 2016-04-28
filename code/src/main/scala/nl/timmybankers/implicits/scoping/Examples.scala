@@ -5,23 +5,19 @@ package nl.timmybankers.implicits.scoping
   */
 object Examples {
 
-  def companionObject = {
-    implicitly[CaseClass]
+  def implicitlyCaseClass() = {
+    println(implicitly[CaseClass])
   }
 
-  def packageObject = {
-    implicitly[CaseClass]
-  }
-
-  def wildcard = {
+  def wildcard() = {
     object Wildcard {
       implicit val x = CaseClass("defined in object Wildcard")
     }
     import Wildcard._
-    implicitly[CaseClass]
+    println(implicitly[CaseClass])
   }
 
-  def explicit = {
+  def explicit() = {
     object Explicit {
       implicit val x = CaseClass("defined in object Explicit")
     }
@@ -30,7 +26,7 @@ object Examples {
     }
     import Explicit.x
     //    import Wildcard._
-    implicitly[CaseClass]
+    println(implicitly[CaseClass])
   }
 
 }
