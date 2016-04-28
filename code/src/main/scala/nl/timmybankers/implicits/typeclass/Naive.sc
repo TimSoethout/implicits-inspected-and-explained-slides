@@ -1,10 +1,10 @@
 object NaiveSerializer {
-  trait JsonSerializable2 {
+  trait JsonSerializable {
     def toJsonString: String
   }
 
   type Amount = BigDecimal
-  case class Account(name: String, balance: Amount) extends JsonSerializable2 {
+  case class Account(name: String, balance: Amount) extends JsonSerializable {
     override def toJsonString: String = s"{name: $name, balance: $balance}"
   }
 }
