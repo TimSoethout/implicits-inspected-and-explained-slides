@@ -117,18 +117,24 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					## Outline
 
 					- Manifestations of Implicits
-						+ Implicit conversions
+						+ Implicit conversions -> implicit views
 						+ Implicit parameters (http://www.lihaoyi.com/post/StrategicScalaStylePrincipleofLeastPower.html#implicit-method-parameter)
 						+ Implicit val/var/defs
+						+ Implicit (value) class
 					- Use cases + how it works underneath
 						+ javap
 						+ use intellij to see whats where
+							* command + shift + p - see what is used for implicit conversion
+							* control + q - see what implicits are in scope for this value
+						+ show implicits from predef in scope
 					- Well known uses?
+						+ `implicitly`
 						+ Akka ActorRef
 						+ ExecutionContext (futures)
 						+ Dependency Injection
 						+ Type classes
 						+ Circe + Spray JSON etc
+						+ Shapeless
 					- Utilities and tooling support (think of a better name)
 					- Type classes
 					- Ending
@@ -162,6 +168,31 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					(Effective Scala - http://twitter.github.io/effectivescala/)
 				</section>
 
+
+				<section data-markdown>
+					## Odersky Explains
+
+					1. First, we look for implicits that are visible either as locals or
+as members of enclosing classes and packages or as imports - the
+precise rule is that we should be able to access them using their name
+only, without any prefix.
+
+					2. If no implicits are found in step 1, we look in the "implicit
+scope", which contains all sort of companion objects that bear some
+relation to the type which we search for (i.e. companion object of the type itself, of its
+parameters if any are given, and also of its supertype and supertraits; the importance
+is to be as general as possible without reverting to whole program analysis like
+Haskell does).
+				</section>
+
+				<section>
+					<section data-markdown>
+					## References
+
+					- Scala documentation: [Java Converters](http://docs.scala-lang.org/overviews/collections/conversions-between-java-and-scala-collections.html)
+					- Book: [Scala In Depth](https://www.manning.com/books/scala-in-depth)
+					</section>
+				</section>
 			</div>
 
 		</div>
