@@ -131,77 +131,101 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 			</section>
 
-				<section data-markdown>
-					## Outline
-
-					- Manifestations of Implicits
-						+ Implicit conversions -> implicit views
-						+ Implicit parameters (http://www.lihaoyi.com/post/StrategicScalaStylePrincipleofLeastPower.html#implicit-method-parameter)
-						+ Implicit val/var/defs
-						+ Implicit (value) class
-					- Use cases + how it works underneath
-						+ javap
-						+ use intellij to see whats where
-							* command + shift + p - see what is used for implicit conversion
-							* control + q - see what implicits are in scope for this value
-						+ show implicits from predef in scope
-					- Well known uses?
-						+ `implicitly`
-						+ Akka ActorRef
-						+ ExecutionContext (futures)
-						+ Dependency Injection
-						+ Type classes
-						+ Circe + Spray JSON etc
-						+ Shapeless
-						- Scalacheck - Arbitrary?
-					- Utilities and tooling support (think of a better name)
-					- Type classes
-					- Ending
-
-					Note:
-					- http://www.cakesolutions.net/teamblogs/demystifying-implicits-and-typeclasses-in-scala
-					- http://danielwestheide.com/blog/2013/02/06/the-neophytes-guide-to-scala-part-12-type-classes.html
-					- http://stackoverflow.com/questions/5598085/where-does-scala-look-for-implicits - goede voorbeelden
-					- https://vimeo.com/20308847
-					- http://eed3si9n.com/revisiting-implicits-without-import-tax
-					  + http://eed3si9n.com/implicit-parameter-precedence-again
-					- Scala In Depth, the book
-				</section>
 
 
-				<section data-markdown>
-					## Implicits
-					Implicits are a powerful type system feature, but they should be used sparingly.
-					They have complicated resolution rules and make it difficult — by simple lexical examination — to grasp what is actually happening.
-					It’s definitely OK to use implicits in the following situations:
+				<section>
+					<section data-markdown>
+						## Implicits
+					</section>
 
-					- Extending or adding a Scala-style collection
-					- Adapting or extending an object (“pimp my library” pattern)
-					- Use to enhance type safety by providing constraint evidence
-					- To provide type evidence (typeclassing)
-					- For Manifests
-					- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help.
+					<section data-markdown>
+						### What are implicits?
 
-					Do not use implicits to do automatic conversions between similar datatypes (for example, converting a list to a stream); these are better done explicitly because the types have different semantics, and the reader should beware of these implications.
+						- A way to acquire/use values without explicitly referencing them
+						- Manifestations:
+							+ Implicit declarations (`implicit val`)
+							+ Implicit conversions (a.k.a. Implicit views)
+							+ Implicit parameters
+						- Let's take a look
 
-					(Effective Scala - http://twitter.github.io/effectivescala/)
-				</section>
+					</section>
+					<section data-markdown>
+						### Effective Scala
+
+						Implicits are a powerful type system feature, but they should be used sparingly.
+						They have complicated resolution rules and make it difficult — by simple lexical examination — to grasp what is actually happening.
 
 
-				<section data-markdown>
-					## Odersky Explains
+					</section>
+					<section data-markdown>
+						### Effective Scala (2)
 
-					1. First, we look for implicits that are visible either as locals or
-as members of enclosing classes and packages or as imports - the
-precise rule is that we should be able to access them using their name
-only, without any prefix.
+						It’s definitely OK to use implicits in the following situations:
 
-					2. If no implicits are found in step 1, we look in the "implicit
-scope", which contains all sort of companion objects that bear some
-relation to the type which we search for (i.e. companion object of the type itself, of its
-parameters if any are given, and also of its supertype and supertraits; the importance
-is to be as general as possible without reverting to whole program analysis like
-Haskell does).
+						- Extending or adding a Scala-style collection
+						- Adapting or extending an object (“pimp my library” pattern)
+						- Use to enhance type safety by providing constraint evidence
+						- To provide type evidence (typeclassing)
+						- For Manifests
+						- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help.
+					</section>
+					<section data-markdown>
+						### Effective Scala (3)
+
+						Do not use implicits to do automatic conversions between similar datatypes (for example, converting a list to a stream); these are better done explicitly because the types have different semantics, and the reader should beware of these implications.
+					</section>
+
+					<section data-markdown>
+						### Odersky Explains
+
+						1. First, we look for implicits that are visible either as locals or
+	as members of enclosing classes and packages or as imports - the
+	precise rule is that we should be able to access them using their name
+	only, without any prefix.
+
+						2. If no implicits are found in step 1, we look in the "implicit
+	scope", which contains all sort of companion objects that bear some
+	relation to the type which we search for (i.e. companion object of the type itself, of its
+	parameters if any are given, and also of its supertype and supertraits; the importance
+	is to be as general as possible without reverting to whole program analysis like
+	Haskell does).
+					</section>
+					<section data-markdown>
+						## Outline
+
+						- Manifestations of Implicits
+							+ Implicit conversions -> implicit views
+							+ Implicit parameters (http://www.lihaoyi.com/post/StrategicScalaStylePrincipleofLeastPower.html#implicit-method-parameter)
+							+ Implicit val/var/defs
+							+ Implicit (value) class
+						- Use cases + how it works underneath
+							+ javap
+							+ use intellij to see whats where
+								* command + shift + p - see what is used for implicit conversion
+								* control + q - see what implicits are in scope for this value
+							+ show implicits from predef in scope
+						- Well known uses?
+							+ `implicitly`
+							+ Akka ActorRef
+							+ ExecutionContext (futures)
+							+ Dependency Injection
+							+ Type classes
+							+ Circe + Spray JSON etc
+							+ Shapeless
+							- Scalacheck - Arbitrary?
+						- Utilities and tooling support (think of a better name)
+						- Type classes
+						- Ending
+
+						Note:
+						- http://www.cakesolutions.net/teamblogs/demystifying-implicits-and-typeclasses-in-scala
+						- http://danielwestheide.com/blog/2013/02/06/the-neophytes-guide-to-scala-part-12-type-classes.html
+						- http://stackoverflow.com/questions/5598085/where-does-scala-look-for-implicits - goede voorbeelden
+						- https://vimeo.com/20308847
+						- http://eed3si9n.com/revisiting-implicits-without-import-tax
+						  + http://eed3si9n.com/implicit-parameter-precedence-again
+						- Scala In Depth, the book
+					</section>
 				</section>
 
 				<section>
@@ -217,6 +241,7 @@ Haskell does).
 
 						- Scala documentation: [Java Converters](http://docs.scala-lang.org/overviews/collections/conversions-between-java-and-scala-collections.html)
 						- Book: [Scala In Depth](https://www.manning.com/books/scala-in-depth)
+						- [Effective Scala](http://twitter.github.io/effectivescala/)
 					</section>
 				</section>
 			</div>

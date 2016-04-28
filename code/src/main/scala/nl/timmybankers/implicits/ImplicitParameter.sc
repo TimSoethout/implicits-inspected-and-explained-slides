@@ -11,6 +11,12 @@ implicit val someInt : Int = 42
 
 giveMeAnInt
 
+//another way
+implicitly[Int]
+
+// show with javap -v what happens
+def someCall = giveMeAnInt
+
 
 trait StringHelper[A] {
   def readable(a: A): String
