@@ -1,6 +1,4 @@
 // amazing code examples
-
-
 import scala.language.implicitConversions
 
 def toString(i: Int): String = i.toString
