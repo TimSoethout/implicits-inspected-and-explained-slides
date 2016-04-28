@@ -169,6 +169,10 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						+ Implicit parameters
 						+ Implicit classes
 
+						Note:
+						- `ImplicitParameter.sc`
+						- `ImplicitConversion.sc`
+						- `ImplicitClass.sc`
 					</section>
 					<section data-markdown>
 						### Effective Scala
@@ -217,8 +221,11 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					<section data-markdown>
 						### Demo
 
-						+ Scoping
+						+ Scoping and resolving
 
+						Note:
+						- First show `scoping` package
+						- `Scoping.sc`
 					</section>
 					<section data-markdown>
 						### Outline
@@ -255,6 +262,38 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- http://eed3si9n.com/revisiting-implicits-without-import-tax
 						  + http://eed3si9n.com/implicit-parameter-precedence-again
 						- Scala In Depth, the book
+					</section>
+				</section>
+
+				<section>
+					<section data-markdown>
+						## Typeclasses
+					</section>
+
+					<section data-markdown>
+						### Typeclass uses
+
+						- Ad-hoc polymorphism
+						- Extension of libraries
+
+						Note:
+						- Extending library without changing library code
+						- Know from Haskell
+						- Can be implemented in Scala using implicits
+						- Example sort a collection if elements of collection are comparable
+							+ Can be done by inheritance, interface etc
+							+ But, static and only when writing the element type
+							+ Basically extend the library
+					</section>
+
+					<section data-markdown>
+						### Demo
+
+						+ Typeclass for JSON Serialisation
+
+						Note:
+						- `typeclass/Naive.sc`
+						- `typeclass/JsonSerializer.sc`
 					</section>
 				</section>
 
