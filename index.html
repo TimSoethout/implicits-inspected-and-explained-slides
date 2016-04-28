@@ -73,6 +73,13 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 					Note:
 					- Welcome!
+					- Tell about background, for ScalaDays, commercial conference
+					- About Programming Language Scala and going into implicits, since this is magic for a lot of people
+					- Feedback is welkom, practice NY
+					- Many Scala users see implicits everywhere, but their exact use remains a bit magic
+					- Goal of talk is to give you an intuition on how implicits work and where to look when things go haywire.
+					- Target audience is Scala developers, who already know the language and syntax
+					- TODO remove outline
 					  </script>
 				</section>
 
@@ -175,11 +182,27 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- `ImplicitClass.sc`
 					</section>
 					<section data-markdown>
+						### Usecases
+
+						- DSLs
+						- Passing around type evidence
+						- Compile time Dependency Injection
+						- Reduce verbosity
+
+						Note:
+						- DSLs: reuse standard Scala types and collections by extending them with your library functions
+						- Type evidence can help with creating more type safe interfaces, i.e. in Builders
+						- Pass in dependencies depending on which implicit is in scope
+						- Less writing, more implicit
+					</section>
+					<section data-markdown>
 						### Effective Scala
 
 						Implicits are a powerful type system feature, but they should be used sparingly.
 						They have complicated resolution rules and make it difficult — by simple lexical examination — to grasp what is actually happening.
 
+						Note:
+						- Powerful, but can be magical in grasping, IDE support is really handy here
 					</section>
 					<section data-markdown>
 						### Effective Scala (2)
@@ -197,6 +220,9 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						### Effective Scala (3)
 
 						Do not use implicits to do automatic conversions between similar datatypes (for example, converting a list to a stream); these are better done explicitly because the types have different semantics, and the reader should beware of these implications.
+
+						Note:
+						- Be careful with conversions, implicits can help, also when being explicit
 					</section>
 					</section>
 
@@ -217,6 +243,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 								Note:
 								- the importance is to be as general as possible without reverting to whole program analysis like Haskell does).
+								- This is so that library developers can provide sensible defaults in Companion Objects and Package Objects and users can override those by importing or defining implicits in local scope
 					</section>
 					<section data-markdown>
 						### Demo
@@ -227,7 +254,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- First show `scoping` package
 						- `Scoping.sc`
 					</section>
-					<section data-markdown>
+					<!-- <section data-markdown>
 						### Outline
 
 						- Manifestations of Implicits
@@ -262,7 +289,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- http://eed3si9n.com/revisiting-implicits-without-import-tax
 						  + http://eed3si9n.com/implicit-parameter-precedence-again
 						- Scala In Depth, the book
-					</section>
+					</section> -->
 				</section>
 
 				<section>
@@ -302,8 +329,22 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						## Wrap up
 					</section>
 					<section data-markdown>
+						### Recap
+
+						- Implicts are powerful
+						- Use cases range from DSLs to extending libraries to full blown DI
+						- Implicit precendence: first look local, then in companion/package object
+						- Typeclasses to extend libraries
+
+						Note:
+						- Typeclasses, extend in Nonintrusive way
+					</section>
+					<section data-markdown>
 						### Questions?
 						### Comments?
+
+						Note:
+						- Please let me know, to improve the presentation
 					</section>
 					<section data-markdown>
 						### References
