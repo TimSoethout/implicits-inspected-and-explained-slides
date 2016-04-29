@@ -57,7 +57,8 @@ object NicerSerializableModel {
     }
   }
 
-  //  implicit def jsonMap[K, V](implicit kWriter : JsonWriter[K], vWriter : JsonWriter[V]): JsonWriter[Map[K, V]] = {
+//  implicit def jsonMap[K, V](implicit kWriter : JsonWriter[K], vWriter : JsonWriter[V]): JsonWriter[Map[K, V]] = {
+  // ===
   implicit def jsonMap[K: JsonWriter, V: JsonWriter]: JsonWriter[Map[K, V]] = {
     JsonWriter((map: Map[K, V]) => {
       val items = for {(k, v) <- map}
