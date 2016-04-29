@@ -194,6 +194,11 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- Type evidence can help with creating more type safe interfaces, i.e. in Builders
 						- Pass in dependencies depending on which implicit is in scope
 						- Less writing, more implicit
+						- More:
+							+ Akka ActorRef
+							+ ExecutionContext (futures) - Threadpool management
+							+ Generic Programming, shapeless
+							+ Collections library Scala
 					</section>
 					<section data-markdown>
 						### Effective Scala
@@ -304,7 +309,8 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- Extension of libraries
 
 						Note:
-						- Extending library without changing library code
+						- Extending library without changing library code, loose coupling
+						- Ad-hoc polymorphism, where you can pick and choose behaviour to be retrofitted to existing types.
 						- Know from Haskell
 						- Can be implemented in Scala using implicits
 						- Example sort a collection if elements of collection are comparable
