@@ -73,7 +73,6 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 					Note:
 					- Welcome!
-					- Tell about background, for ScalaDays, commercial conference
 					- About Programming Language Scala and going into implicits, since this is magic for a lot of people
 					- Many Scala users see implicits everywhere, but their exact use remains a bit magic
 					- Goal of talk is to give you an intuition on how implicits work and where to look when things go haywire.
@@ -89,7 +88,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 					Tim Soethout
 					- Functional programmer at heart
-					- Scala evangelist/trainer inside ING Bank
+					- Scala/FP evangelist/trainer inside ING Bank
 
 						![ING](image/ING_logo.png) <!-- .element: style="width:10em;" -->
 					- PhD Candidate at CWI
@@ -118,7 +117,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					### Scala @ ![ING](image/ING_logo.png) .element: style="width:4em; margin: 0;" -->
 
 					<!-- - Trainings each month (~10 new Scala/Akka devs)
-					- Enthousiastic Scala Guild
+					- Enthusiastic Scala Guild
 					- ~4 full Scala applications in Production (Retail banking NL)
 					- Internal reusable library on Scala and Finagle (embedded in lots of applications)
 					- More and more departments starting, also for data science
@@ -144,9 +143,56 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					</section>
 
 					<section data-markdown>
-						### What are implicits?
+						### What?
 
-						Acquire/use values without explicit reference
+						- Use values without explicit reference
+						- OO: _is a_ + _has a_
+						- Implicits add: _is-viewable-as-a_
+						- Loose Coupling, Tight Cohesion
+
+						Note:
+						- _is a_: extends
+						- _has a_: members
+						- Enables: Small core interfaces + rich views
+					</section>
+					<section data-markdown>
+							### Implicits enable
+
+							- DSLs
+							- Passing around type evidence
+							- Dependency Injection at Compile time
+							- Reduce verbosity
+							- Type classes
+							- Extending libraries
+
+							Note:
+							- DSLs: reuse standard Scala types and collections by extending them with your library functions
+							- Type evidence can help with creating more type safe interfaces, i.e. in Builders, constraint evidence
+							- Pass in dependencies depending on which implicit is in scope
+							- Less writing, more implicit
+							- More:
+								+ Akka ActorRef
+								+ ExecutionContext (futures) - Threadpool management
+								+ Generic Programming, shapeless
+								+ Collections library Scala
+					</section>
+
+					<section data-markdown>
+							### But beware
+
+							- Complicated resolution rules
+							- Automatic conversions
+
+							Note:
+							- Powerful, but can be magical in grasping, IDE support is really handy here
+							- Simple lexical examination not always enough
+							- Be careful with conversions, implicits can help, also when being explicit
+								+ Semantics can be different (List to Stream)
+							- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help.
+					</section>
+
+					<section data-markdown>
+						### How?
 
 						- Implicit conversions (a.k.a. Implicit views)
 							```scala
@@ -178,62 +224,6 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- `ImplicitClass.sc`
 						- Explain about IDE support
 					</section>
-					<section data-markdown>
-						### Usecases
-
-						- DSLs
-						- Passing around type evidence
-						- Dependency Injection at Compile time
-						- Reduce verbosity
-
-						Note:
-						- DSLs: reuse standard Scala types and collections by extending them with your library functions
-						- Type evidence can help with creating more type safe interfaces, i.e. in Builders
-						- Pass in dependencies depending on which implicit is in scope
-						- Less writing, more implicit
-						- More:
-							+ Akka ActorRef
-							+ ExecutionContext (futures) - Threadpool management
-							+ Generic Programming, shapeless
-							+ Collections library Scala
-					</section>
-					<section data-markdown>
-						### Implicits
-
-						- Powerfull type system feature
-						- Complicated resolution rules
-
-						Note:
-						- TODO why powerful?
-						- Powerful, but can be magical in grasping, IDE support is really handy here
-						- Simple lexical examination not always enough
-						Implicits are a powerful type system feature, but they should be used sparingly.
-						They have complicated resolution rules and make it difficult — by simple lexical examination — to grasp what is actually happening.
-
-					</section>
-					<section data-markdown>
-						### Effective Scala (2)
-
-						It’s definitely OK to use implicits in the following situations:
-
-						- Extending or adding a Scala-style collection
-						- Adapting or extending an object (“pimp my library” pattern)
-						- Use to enhance type safety by providing constraint evidence
-						- To provide type evidence (typeclassing)
-						- For Manifests
-						- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help.
-
-						Note:
-						- TODO make this text less
-					</section>
-					<section data-markdown>
-						### Effective Scala (3)
-
-						Do not use implicits to do automatic conversions between similar datatypes (for example, converting a list to a stream); these are better done explicitly because the types have different semantics, and the reader should beware of these implications.
-
-						Note:
-						- Be careful with conversions, implicits can help, also when being explicit
-					</section>
 					</section>
 
 					<section>
@@ -244,16 +234,17 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						### Odersky Explains
 
 						Lookup precedence:
-						1. Visible either as locals or as members of enclosing classes and packages or as imports -
-							by name only, without any prefix.
-						2. If not found, look in "implicit	scope": companion objects that bear some
-	relation to the type i.e.:
-							- companion object of the type itself,
-							- its parameters if any are given, and also of its supertype and supertraits;
+						1. By name only, without any prefix
+						2. In "implicit scope":
+							- companion/package object of
+								+ the type
+								+ its parameters + supertype and supertraits
 
-								Note:
-								- the importance is to be as general as possible without reverting to whole program analysis like Haskell does).
-								- This is so that library developers can provide sensible defaults in Companion Objects and Package Objects and users can override those by importing or defining implicits in local scope
+						Note:
+						1. Visible as locals/members of enclosing classes and packages or as imports
+						2. companion objects that bear some relation to the type
+						- the importance is to be as general as possible without reverting to whole program analysis like Haskell does).
+						- This is so that library developers can provide sensible defaults in Companion Objects and Package Objects and users can override those by importing or defining implicits in local scope
 					</section>
 					<section data-markdown>
 						### Demo
@@ -316,18 +307,21 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						Note:
 						- Extending library without changing library code, loose coupling
 						- Ad-hoc polymorphism, where you can pick and choose behaviour to be retrofitted to existing types.
-						- Know from Haskell
+						- Know from Haskell: Used to bring polymorphism to type level
 						- Can be implemented in Scala using implicits
 						- Example sort a collection if elements of collection are comparable
 							+ Can be done by inheritance, interface etc
 							+ But, static and only when writing the element type
 							+ Basically extend the library
+						- TODO: more background
 					</section>
 
 					<section data-markdown>
 						### Demo
 
-						+ Typeclass for JSON Serialisation
+						Typeclass for JSON Serialisation
+						- Naive with subtyping
+						- Typeclass + improvements
 
 						Note:
 						- `typeclass/Naive.sc`
@@ -343,14 +337,15 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						<script type="text/template">
 						### Recap
 
-						- Implicts are powerful
-						- Use cases range from DSLs to extending libraries to full blown DI
-						- Implicit precendence: first look local, then in companion/package object
+						- Implicits are powerful
+						- Use your IDE
+						- Implicit precedence: first look local, then in companion/package object
 						- Typeclasses to extend libraries
 
 						### Questions? <!-- .element: class="fragment" data-fragment-index="2" -->
 
 						Note:
+						- Use cases range from DSLs to extending libraries to full blown DI
 						- Typeclasses, extend in Nonintrusive way
 						 </script>
 					</section>
@@ -367,7 +362,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 							+ [Finding Implicits](http://docs.scala-lang.org/tutorials/FAQ/finding-implicits.html)
 						- Book: [Scala In Depth](https://www.manning.com/books/scala-in-depth)
 						- [Effective Scala](http://twitter.github.io/effectivescala/)
-						-
+						- Blog [All Things Runnable](http://lalitpant.blogspot.nl/2008/08/scala-implicits-dose-of-magic-part-1.html)
 				</section>
 			</div>
 
