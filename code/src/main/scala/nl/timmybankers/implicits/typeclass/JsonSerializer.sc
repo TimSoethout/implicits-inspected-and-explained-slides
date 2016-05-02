@@ -1,12 +1,14 @@
 object Model {
   type Amount = BigDecimal
   case class Account(name: String, balance: Amount)
-  case class Payment(fromAccount: Account, toAccount: Account, amount: Amount)
+  case class Payment(from: Account, to: Account, amount: Amount)
+  case class Person(firstName: String, lastName: String, age: Int)
 }
 
 val myAccount = Model.Account("My Account", 1000)
 val yourAccount = Model.Account("Your Account", 2000)
 val payment = Model.Payment(myAccount, yourAccount, 500)
+val person = Person("Tim", "Soethout", 27)
 
 object ModelSerializer {
   trait JsonWriter[T] {
@@ -96,10 +98,6 @@ object GenericSerializableModel {
     })
   }
 }
-
-case class Person(firstName: String, lastName: String, age: Int)
-
-val person = Person("Tim", "Soethout", 27)
 
 person.isInstanceOf[Product]
 
