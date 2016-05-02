@@ -1,0 +1,102 @@
+| \gDemo's for Implicits Inspected and Explained
+
+---
+
+| \gLocal scope
+
+```
+case class CaseClass(content: String)
+
+object CaseClass {
+  implicit val cc = CaseClass("defined in companion object")
+}
+
+object Explicit {
+  implicit val explicitCaseClass = CaseClass("defined in object Explicit")
+}
+
+object Wildcard {
+  implicit val wildcardCaseClass = CaseClass("defined in object Wildcard")
+}
+
+def findCaseClass(implicit cc: CaseClass) = cc
+
+findCaseClass
+```
+
+---
+
+| \gWildcard import
+
+```
+case class CaseClass(content: String)
+
+object CaseClass {
+  implicit val cc = CaseClass("defined in companion object")
+}
+
+object Explicit {
+  implicit val explicitCaseClass = CaseClass("defined in object Explicit")
+}
+
+object Wildcard {
+  implicit val wildcardCaseClass = CaseClass("defined in object Wildcard")
+}
+
+def findCaseClass(implicit cc: CaseClass) = cc
+
+import Wildcard._ // <-
+
+findCaseClass
+```
+
+---
+
+| \gExplicit import
+
+```
+case class CaseClass(content: String)
+
+object CaseClass {
+  implicit val cc = CaseClass("defined in companion object")
+}
+
+object Explicit {
+  implicit val explicitCaseClass = CaseClass("defined in object Explicit")
+}
+
+object Wildcard {
+  implicit val wildcardCaseClass = CaseClass("defined in object Wildcard")
+}
+
+def findCaseClass(implicit cc: CaseClass) = cc
+
+import Explicit.explicitCaseClass // <-
+
+findCaseClass
+```
+---
+| \gExplicit import (2)
+
+```
+case class CaseClass(content: String)
+
+object CaseClass {
+  implicit val cc = CaseClass("defined in companion object")
+}
+
+object Explicit {
+  implicit val explicitCaseClass = CaseClass("defined in object Explicit")
+}
+
+object Wildcard {
+  implicit val wildcardCaseClass = CaseClass("defined in object Wildcard")
+}
+
+def findCaseClass(implicit cc: CaseClass) = cc
+
+import Explicit.explicitCaseClass // <-
+import Wildcard._                 // <-
+
+findCaseClass
+```
