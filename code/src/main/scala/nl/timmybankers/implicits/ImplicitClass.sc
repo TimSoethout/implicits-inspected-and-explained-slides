@@ -6,7 +6,7 @@ implicit class RichBalance(val balance: Balance) {
     balance.copy(amount = -balance.amount)
 
   def +(right: Balance): Balance =
-    balance.copy(amount = balance.amount + right.amount)
+    balance.copy(amount = this.balance.amount + right.amount)
 }
 
 val balance = Balance(1000)
