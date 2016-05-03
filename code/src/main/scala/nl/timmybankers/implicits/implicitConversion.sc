@@ -26,7 +26,7 @@ import java.util
 
 val javaList: util.List[Int] = java.util.Arrays.asList(1, 2, 3)
 
-def someDefUsingList(list: scala.collection.mutable.Buffer[Int]) = {
+def someDefUsingList(list: Seq[Int]) = {
   println(list)
 }
 

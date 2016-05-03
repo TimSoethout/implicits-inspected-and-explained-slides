@@ -17,7 +17,7 @@ giveMeAnInt(100)
 ```
 --
 
-| Now we define an implicit parameter
+| Now we define an implicit
 
 ```
 implicit val someInt : Int = 42
@@ -134,27 +134,27 @@ val javaList: java.util.List[Int] = java.util.Arrays.asList(1, 2, 3)
 
 | and a method taking a Scala Seq
 ```
-def someDefUsingList(list: Seq[Int]) = println(list)
+def someDefUsingSeq(seq: Seq[Int]) = println(seq)
 ```
 --
 
 | It will not work
 ```
-someDefUsingList(javaList)
+someDefUsingSeq(javaList)
 ```
 --
 
 | unless we give it an implicit conversion
 ```
 import scala.collection.JavaConversions._
-someDefUsingList(javaList)
+someDefUsingSeq(javaList)
 ```
 --
 
 | Or better, be explicit about when to convert
 ```
 import scala.collection.JavaConverters._
-someDefUsingList(javaList.asScala)
+someDefUsingSeq(javaList.asScala)
 ```
 ---
 | \gImplicit Class
@@ -162,6 +162,7 @@ someDefUsingList(javaList.asScala)
 | Assume `Balance` is defined in another library
 
 ```
+case class Balance(amount: Int)
 val balance = Balance(1000)
 --
 -balance
@@ -188,7 +189,7 @@ implicit class RichBalance(val balance: Balance) {
 ---
 
 | \*\bScoping and Resolving
-
+---
 | \gLocal scope
 
 ```
@@ -445,9 +446,9 @@ Map("a" -> "1", "b" -> "2").toJson
 ```
 implicit val jsonPayment: JsonWriter[Model.Payment] =
   JsonWriter[Model.Payment](payment =>
-    Map("from" -> payment.from.name.toJson,
-        "to" -> payment.to.name.toJson,
-        "balance" -> payment.amount.toJson).toJson)
+    Map("from" -> payment.from.name,
+        "to" -> payment.to.name,
+        "balance" -> payment.amount.toString).toJson)
 
 payment.toJson
 ```
@@ -464,7 +465,7 @@ implicit def jsonProduct: JsonWriter[Product] = {
   JsonWriter(product => {
     val map = product.getClass.getDeclaredFields.map(_.getName) // field names
       .zip(product.productIterator.to).toMap // zipped with all values
-    map.mapValues(_.toJson).toJson
+    map.toJson
   })
 }
 --
