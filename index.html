@@ -72,7 +72,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					http://blog.timmybankers.nl
 
 					Note:
-					- Welcome!
+					- Welcome! - mail feedback to tim.soethout@ing.nl
 					- About Programming Language Scala and going into implicits, since this is magic for a lot of people
 					- Many Scala users see implicits everywhere, but their exact use remains a bit magic
 					- Goal of talk is to give you an intuition on how implicits work and where to look when things go haywire.
@@ -151,8 +151,9 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- Loose Coupling, Tight Cohesion
 
 						Note:
-						- _is a_: extends
-						- _has a_: members
+						- _is a_: extends: Cow is an Animal
+						- _has a_: members: Animal has a name
+						- Cow is viewable as a Mammal
 						- Enables: Small core interfaces + rich views
 					</section>
 					<section data-markdown>
@@ -214,9 +215,10 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						    ): Service[Req, Rep] = ...
 						}```
 						```scala
-						val builder: ClientBuilder[Request, Response, Yes, Yes, Nothing] = ClientBuilder()
-							.codec(Http())
-							.hosts("twitter.com:80")
+						val builder: ClientBuilder[Request, Response, Yes, Yes, Nothing] =
+						  ClientBuilder()
+							  .codec(Http())
+							  .hosts("twitter.com:80")
 
 						builder.build()
 						```
@@ -289,14 +291,10 @@ builder.build()
 						- `ImplicitClass.sc`
 						- Explain about IDE support
 					</section>
-					</section>
 
-					<section>
-						<section data-markdown>
-							## Scoping
-						</section>
 					<section data-markdown>
-						### Odersky Explains
+						### Scoping
+						#### Odersky Explains
 
 						Lookup precedence:
 						1. By name only, without any prefix
@@ -369,16 +367,27 @@ builder.build()
 						- Ad-hoc polymorphism
 						- Extension of libraries
 
+						```
+						trait Numeric[T] extends Ordering[T] {
+							def plus(x: T, y: T): T
+							def minus(x: T, y: T): T
+							def times(x: T, y: T): T
+							...
+						}
+						```
+
 						Note:
+						- Interface that describes behavior
 						- Extending library without changing library code, loose coupling
 						- Ad-hoc polymorphism, where you can pick and choose behaviour to be retrofitted to existing types.
 						- Know from Haskell: Used to bring polymorphism to type level
+							+ Examples: Comparability, printability, summing up
+							+ Type class captures common sets of operations
 						- Can be implemented in Scala using implicits
 						- Example sort a collection if elements of collection are comparable
 							+ Can be done by inheritance, interface etc
 							+ But, static and only when writing the element type
 							+ Basically extend the library
-						- TODO: more background
 					</section>
 
 					<section data-markdown>
