@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 case class REPLesent(
-  width: Int = 0
-, height: Int = 0
-, input: String = "REPLesent.txt"
-, slideCounter: Boolean = false
-, slideTotal: Boolean = false
-, intp: scala.tools.nsc.interpreter.IMain = null
-) {
+                      width: Int = 0
+                      , height: Int = 0
+                      , input: String = "REPLesent.txt"
+                      , slideCounter: Boolean = false
+                      , slideTotal: Boolean = false
+                      , intp: scala.tools.nsc.interpreter.IMain = null
+                    ) {
   import scala.util.Try
 
   private case class Config(
-    top: String = "*"
-  , bottom: String = "*"
-  , sinistral: String = "* "
-  , dextral: String = " *"
-  , newline: String = System.lineSeparator
-  , whiteSpace: String = " "
-  , private val width: Int
-  , private val height: Int
-  ) {
+                             top: String = "*"
+                             , bottom: String = "*"
+                             , sinistral: String = "* "
+                             , dextral: String = " *"
+                             , newline: String = System.lineSeparator
+                             , whiteSpace: String = " "
+                             , private val width: Int
+                             , private val height: Int
+                           ) {
     val (screenWidth, screenHeight): (Int, Int) = {
       val defaultWidth = 80
       val defaultHeight = 25
@@ -337,7 +337,9 @@ case class REPLesent(
 
     def lastBuild: Option[Build] = jumpTo(slides.size) orElse previousBuild
 
-    def runCode(): Unit = {
+    def currentSlideNumber: Int = slideCursor
+
+    def runCode: Unit = {
       val code = currentSlide.code(buildCursor)
 
       if (repl.isEmpty) {
@@ -351,24 +353,24 @@ case class REPLesent(
   }
 
   private val helpMessage = """Usage:
-    |  next          n      >     go to next build/slide
-    |  previous      p      <     go back to previous build/slide
-    |  redraw        z            redraw the current build/slide
-    |  Next          N      >>    go to next slide
-    |  Previous      P      <<    go back to previous slide
-    |  i next        i n          advance i slides
-    |  i previous    i p          go back i slides
-    |  i go          i g          go to slide i
-    |  first         f      |<    go to first slide
-    |  last          l      >|    go to last slide
-    |  Last          L      >>|   go to last build of last slide
-    |  run           r      !!    execute code that appears on slide
-    |  blank         b            blank screen
-    |  help          h      ?     print this help message""".stripMargin
+                              |  next          n      >     go to next build/slide
+                              |  previous      p      <     go back to previous build/slide
+                              |  redraw        z            redraw the current build/slide
+                              |  Next          N      >>    go to next slide
+                              |  Previous      P      <<    go back to previous slide
+                              |  i next        i n          advance i slides
+                              |  i previous    i p          go back i slides
+                              |  i go          i g          go to slide i
+                              |  first         f      |<    go to first slide
+                              |  last          l      >|    go to last slide
+                              |  Last          L      >>|   go to last build of last slide
+                              |  run           r      !!    execute code that appears on slide
+                              |  blank         b            blank screen
+                              |  help          h      ?     print this help message""".stripMargin
 
   private val repl = Option(intp)
 
-  private val deck = Deck(parseFile(input))
+  private var deck = Deck(parseFile(input))
 
   private def parseFile(file: String): IndexedSeq[Slide] = {
     Try {
@@ -380,59 +382,59 @@ case class REPLesent(
     }
   }
 
-  private sealed trait Parser {
-    def switch: Parser
-    def apply(line: String): (Line, Option[String])
-  }
-
-  private object LineParser extends Parser {
-    def switch: Parser = CodeParser
-    def apply(line: String): (Line, Option[String]) = (Line(line), None)
-  }
-
-  private object CodeParser extends Parser {
-    private val regex = {
-      val wb = "\\b"
-
-      val colors = Seq("g", "*", "c", "b", "m")
-
-      Seq(
-        """(?:true|false|null|this)"""
-        , """[$_]*[A-Z][_$A-Z0-9]*[\w$]*"""
-        , """(?:contains|exists|filter|filterNot|find|flatMap|flatten|fold|""" +
-          """forall|foreach|getOrElse|map|orElse)"""
-        , """(?i)(?:(?:0(?:[0-7]+|X[0-9A-F]+))L?|(?:(?:0|[1-9][0-9]*)""" +
-          """(?:(?:\.[0-9]+)?(?:E[+\-]?[0-9]+)?F?|L?))|\\.[0-9]+(?:E[+\-]?[0-9]+)?F?)"""
-        , """(?:abstract|case|catch|class|def|do|else|extends|final|finally|for|""" +
-          """forSome|if|implicit|import|lazy|match|new|object|override|package|private|""" +
-          """protected|return|sealed|super|throw|trait|try|type|val|var|while|with|yield)"""
-      ) map { s =>
-        (wb + s + wb).r
-      } zip colors
-    }
-
-    def switch: Parser = LineParser
-
-    def apply(line: String): (Line, Option[String]) = {
-      val l = Line("< " + (line /: regex) { case (line, (regex, color)) =>
-        regex.replaceAllIn(line, m =>
-          s"\\\\$color$m\\\\s"
-        )
-      })
-
-      (l, Option(line))
-    }
-  }
-
   private def parse(input: Iterator[String]): IndexedSeq[Slide] = {
+    sealed trait Parser {
+      def switch: Parser
+      def apply(line: String): (Line, Option[String])
+    }
+
+    object LineParser extends Parser {
+      def switch: Parser = CodeParser
+      def apply(line: String): (Line, Option[String]) = (Line(line), None)
+    }
+
+    object CodeParser extends Parser {
+      private val regex = {
+        val wb = "\\b"
+
+        val colors = Seq("g", "*", "c", "b", "m")
+
+        Seq(
+          """(?:true|false|null|this)"""
+          , """[$_]*[A-Z][_$A-Z0-9]*[\w$]*"""
+          , """(?:contains|exists|filter|filterNot|find|flatMap|flatten|fold|""" +
+            """forall|foreach|getOrElse|map|orElse)"""
+          , """(?i)(?:(?:0(?:[0-7]+|X[0-9A-F]+))L?|(?:(?:0|[1-9][0-9]*)""" +
+            """(?:(?:\.[0-9]+)?(?:E[+\-]?[0-9]+)?F?|L?))|\\.[0-9]+(?:E[+\-]?[0-9]+)?F?)"""
+          , """(?:abstract|case|catch|class|def|do|else|extends|final|finally|for|""" +
+            """forSome|if|implicit|import|lazy|match|new|object|override|package|private|""" +
+            """protected|return|sealed|super|throw|trait|try|type|val|var|while|with|yield)"""
+        ) map { s =>
+          (wb + s + wb).r
+        } zip colors
+      }
+
+      def switch: Parser = LineParser
+
+      def apply(line: String): (Line, Option[String]) = {
+        val l = Line("< " + (line /: regex) { case (line, (regex, color)) =>
+          regex.replaceAllIn(line, m =>
+            s"\\\\$color$m\\\\s"
+          )
+        })
+
+        (l, Option(line))
+      }
+    }
+
     case class Acc(
-      content: IndexedSeq[Line] = IndexedSeq.empty
-    , builds: IndexedSeq[Int] = IndexedSeq.empty
-    , deck: IndexedSeq[Slide] = IndexedSeq.empty
-    , code: IndexedSeq[String] = IndexedSeq.empty
-    , codeAcc: IndexedSeq[String] = IndexedSeq.empty
-    , parser: Parser = LineParser
-    ) {
+                    content: IndexedSeq[Line] = IndexedSeq.empty
+                    , builds: IndexedSeq[Int] = IndexedSeq.empty
+                    , deck: IndexedSeq[Slide] = IndexedSeq.empty
+                    , code: IndexedSeq[String] = IndexedSeq.empty
+                    , codeAcc: IndexedSeq[String] = IndexedSeq.empty
+                    , parser: Parser = LineParser
+                  ) {
       import config.newline
 
       def switchParser: Acc = copy(parser = parser.switch)
@@ -444,8 +446,8 @@ case class REPLesent(
 
       def pushBuild: Acc = copy(
         builds = builds :+ content.size
-      , code = code :+ codeAcc.mkString(newline)
-      , codeAcc = IndexedSeq.empty
+        , code = code :+ codeAcc.mkString(newline)
+        , codeAcc = IndexedSeq.empty
       )
 
       def pushSlide: Acc = {
@@ -517,6 +519,11 @@ case class REPLesent(
       print(render(b))
     }
   }
+  private def reloadDeck(): Unit = {
+    val curSlide = deck.currentSlideNumber
+    deck = Deck(parseFile(input))
+    show(deck.jumpTo(curSlide))
+  }
 
   implicit class Ops(val i: Int) {
     def next: Unit = show(deck.jump(i))
@@ -539,6 +546,9 @@ case class REPLesent(
 
   def redraw: Unit = show(deck.redrawBuild)
   def z: Unit = redraw
+
+  def reload: Unit = reloadDeck
+  def y: Unit = reload
 
   def Next: Unit = 1.next
   def N: Unit = Next
@@ -570,10 +580,4 @@ case class REPLesent(
   def help: Unit = print(helpMessage)
   def h: Unit = help
   def ? : Unit = help
-
-  def showFile(path:String) = {
-    val fullpath: String = s"src/main/scala/$path"
-    println(s"$fullpath:" )
-    println(CodeParser(io.Source.fromFile(fullpath).mkString)._1)
-  }
 }

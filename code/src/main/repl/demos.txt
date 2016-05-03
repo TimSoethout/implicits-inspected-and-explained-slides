@@ -1,6 +1,193 @@
-| \gDemo's for Implicits Inspected and Explained
+| \*Demo's for Implicits Inspected and Explained
 
 ---
+
+| \bImplicits
+
+| \gImplicit parameter
+
+```
+def giveMeAnInt(implicit i : Int) = i
+```
+
+| Use it like a normal method
+
+```
+giveMeAnInt(100)
+```
+--
+
+| Now we define an implicit parameter
+
+```
+implicit val someInt : Int = 42
+
+giveMeAnInt
+```
+--
+
+| Another way to get the implicit value
+
+```
+implicitly[Int]
+```
+---
+
+| Lets look at the internals
+
+```
+def someCall = giveMeAnInt
+```
+
+:javap -c someCall
+
+---
+
+| \gImplicit View
+
+```
+trait StringHelper[A] {
+  def show(a: A): String
+}
+
+--
+def show[A](a: A)(implicit helper: StringHelper[A]) =
+  helper.show(a)
+
+case class Balance(amount: Int)
+object Balance {
+  implicit val stringHelper: StringHelper[Balance] =
+    new StringHelper[Balance] {
+      override def show(balance: Balance): String =
+        s"EUR ${balance.amount}"
+    }
+}
+```
+--
+
+```
+show(Balance(100))(Balance.stringHelper)
+```
+--
+| ===
+```
+show(Balance(100))
+```
+
+---
+
+| Compiler error when no implicit view is found
+
+```
+show("String")
+```
+---
+| Another example
+
+```
+1 to 10
+```
+
+| `to` is defined on `RichInt`
+| and an implicit view is available in `Predef`
+---
+| \gImplicit Conversion
+
+| A normal method
+
+```
+def makeString(i: Int): String = s"makeString: ${i.toString}"
+```
+
+| Which we can call
+
+```
+makeString(1)
+```
+--
+
+```
+case class Balance(amount: Int)
+val balance = Balance(100)
+--
+
+makeString(balance)
+```
+--
+
+| Define an implicit conversion
+
+```
+implicit def balance2Int(balance: Balance): Int = balance.amount
+--
+
+makeString(balance)
+```
+---
+| `JavaConversions` & `JavaConverters`
+
+| Given Java List
+```
+val javaList: java.util.List[Int] = java.util.Arrays.asList(1, 2, 3)
+```
+--
+
+| and a method taking a Scala Seq
+```
+def someDefUsingList(list: Seq[Int]) = println(list)
+```
+--
+
+| It will not work
+```
+someDefUsingList(javaList)
+```
+--
+
+| unless we give it an implicit conversion
+```
+import scala.collection.JavaConversions._
+someDefUsingList(javaList)
+```
+--
+
+| Or better, be explicit about when to convert
+```
+import scala.collection.JavaConverters._
+someDefUsingList(javaList.asScala)
+```
+---
+| \gImplicit Class
+
+| Assume `Balance` is defined in another library
+
+```
+val balance = Balance(1000)
+--
+-balance
+```
+
+| Will not work, and no control over `Balance`
+--
+
+| We can make a wrapper class to extend it
+
+```
+implicit class RichBalance(val balance: Balance) {
+  def unary_- : Balance =
+    balance.copy(amount = -balance.amount)
+}
+--
+
+-balance
+```
+--
+
+| Implicit classes can extend other/library types
+
+---
+
+| \*\bScoping and Resolving
 
 | \gLocal scope
 
@@ -100,3 +287,193 @@ import Wildcard._                 // <-
 
 findCaseClass
 ```
+
+---
+| \bType Class
+
+| \gJSON Serialisation
+---
+| \gNaive Approach
+
+```
+trait JsonSerializable {
+  def toJsonString: String
+}
+--
+
+type Amount = BigDecimal
+case class Account(name: String, balance: Amount)
+  extends JsonSerializable {
+    override def toJsonString: String =
+     s"""{"name": "$name", "balance": "$balance"}"""
+}
+case class Payment(from: Account, to: Account, amount: Amount)
+  extends JsonSerializable {
+    override def toJsonString: String =
+     s"""{"from": "${from.name}", "to": "${to.name}", "amount": "$amount"}"""
+}
+case class Person(firstName: String, lastName: String, age: Int)
+  extends JsonSerializable {
+  override def toJsonString: String =
+   s"""{"firstName": "$firstName", "firstName": "$lastName", "age": "$age"}"""
+}
+```
+---
+| Create JSON from these values
+
+```
+val naiveAccount = Account("My Account", 1000)
+naiveAccount.toJsonString
+```
+--
+
+| It works, but is error prone (firstname)
+
+```
+Person("Tim", "Soethout", 27).toJsonString
+```
+--
+
+| And lots of manual work
+---
+
+| \gType Class approach
+
+```
+object Model {
+  type Amount = BigDecimal
+  case class Account(name: String, balance: Amount)
+  case class Payment(from: Account, to: Account, amount: Amount)
+  case class Person(firstName: String, lastName: String, age: Int)
+}
+
+val myAccount = Model.Account("My Account", 1000)
+val yourAccount = Model.Account("Your Account", 2000)
+val payment = Model.Payment(myAccount, yourAccount, 500)
+val person = Person("Tim", "Soethout", 27)
+```
+---
+| We define `JsonWriter[T]` for relevant types
+
+```
+object ModelSerializer {
+  trait JsonWriter[T] {
+    def toJsonString(value: T): String
+  }
+
+  implicit val jsonString = new JsonWriter[String] {
+    override def toJsonString(value: String): String = s""""$value""""
+  }
+
+  implicit val jsonBigDecimal = new JsonWriter[BigDecimal] {
+    override def toJsonString(value: BigDecimal): String = value.toString
+  }
+
+  implicit val jsonAccount = new JsonWriter[Model.Account] {
+    override def toJsonString(value: Model.Account): String = {
+      val jsonString = implicitly[JsonWriter[String]]
+      val jsonBigDecimal = implicitly[JsonWriter[BigDecimal]]
+      s"""{"name": "${jsonString.toJsonString(value.name)}",
+           "balance": "${jsonBigDecimal.toJsonString(value.balance)}"}"""
+    }
+  }
+}
+```
+---
+| Now we can use this implicit to serialize an `Account`
+
+```
+import ModelSerializer._
+
+val accountWriter = implicitly[JsonWriter[Model.Account]]
+accountWriter.toJsonString(myAccount)
+```
+--
+
+| Still boilerplatey
+
+```
+myAccount.toJson
+```
+
+| would be nice
+
+---
+| Implicit classes can help us
+
+```
+implicit class JsonSerializable[T](serializable: T)
+                                  (implicit serializer: JsonWriter[T]) {
+  def toJson: String = serializer.toJsonString(serializable)
+}
+--
+
+myAccount.toJson
+```
+---
+| Lets generalise a bit more
+
+| Helper to construct writers more easily
+```
+object JsonWriter {
+  def apply[T](func: T => String): JsonWriter[T] = new JsonWriter[T] {
+    override def toJsonString(value: T): String = func(value)
+  }
+}
+```
+
+| `JsonWriter` for `Map`
+```
+implicit def jsonMap[K: JsonWriter, V: JsonWriter]: JsonWriter[Map[K, V]] = {
+  JsonWriter((map: Map[K, V]) => {
+    val items = for {(k, v) <- map}
+      yield s"${k.toJson}: ${v.toJson}"
+    s"{${items.mkString(", ")}}"
+})}
+```
+| The Type bounds are equivalent to
+implicit def jsonMap[K, V](implicit kWriter : JsonWriter[K],
+                                    vWriter : JsonWriter[V])
+--
+
+```
+Map("a" -> "1", "b" -> "2").toJson
+```
+---
+| Now we can use the `JsonWriter[Map[K,V]]` to build our json
+
+```
+implicit val jsonPayment: JsonWriter[Model.Payment] =
+  JsonWriter[Model.Payment](payment =>
+    Map("from" -> payment.from.name.toJson,
+        "to" -> payment.to.name.toJson,
+        "balance" -> payment.amount.toJson).toJson)
+
+payment.toJson
+```
+---
+| We can even generalize it to work with all Case Classes
+
+```
+person.isInstanceOf[Product]
+--
+
+implicit def jsonProduct: JsonWriter[Product] = {
+  // bit of cheating here to get it working for Any
+  implicit val anyProduct: JsonWriter[Any] = JsonWriter(any => any.toString)
+  JsonWriter(product => {
+    val map = product.getClass.getDeclaredFields.map(_.getName) // field names
+      .zip(product.productIterator.to).toMap // zipped with all values
+    map.mapValues(_.toJson).toJson
+  })
+}
+--
+
+jsonProduct.toJsonString(person)
+
+--
+val personProduct : Product = person
+personProduct.toJson
+```
+---
+| \b End of demo's

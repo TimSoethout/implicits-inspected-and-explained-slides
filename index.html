@@ -156,13 +156,88 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- Enables: Small core interfaces + rich views
 					</section>
 					<section data-markdown>
+						### Examples
+
+						- Akka
+						```scala
+						trait ScalaActorRef
+							def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = ...
+						}```
+						```scala
+						actorRef ! SomeMessage("text")
+						```
+
+						- Futures
+						```scala
+						object Future {
+							def apply[T](body: =>T)(implicit executor: ExecutionContext): Future[T] = ...
+						}```
+						```scala
+						Future {
+							doExpensiveComputation()
+						}
+						```
+
+						Note:
+						- implicit to pass in sender from actor context
+						- `ExectutionContext` to handle the thread management
+					</section>
+
+					<section data-markdown>
+						### Examples (2)
+
+						- Collections
+						```scala
+						trait TraversableOnce[+A] {
+							def sum[B >: A](implicit num: Numeric[B]): B = ...
+						}```
+						```scala
+						List(1,2,3).sum
+						```
+
+						Note:
+						- `Numeric` type class to allow sum on things that can be added
+					</section>
+					<section data-markdown>
+						### Examples (3)
+
+						- Finagle
+
+						```scala
+						@implicitNotFound("Builder is not fully configured: Cluster: ${HasCluster}, Codec: ${HasCodec}, HostConnectionLimit: ${HasHostConnectionLimit}")
+						private[builder] trait ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit]
+
+						class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] private[finagle](...) {
+						  def build()(
+						    implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION:
+						    ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit]
+						    ): Service[Req, Rep] = ...
+						}```
+						```scala
+						val builder: ClientBuilder[Request, Response, Yes, Yes, Nothing] = ClientBuilder()
+							.codec(Http())
+							.hosts("twitter.com:80")
+
+						builder.build()
+						```
+
+						```
+						Error:(24, 15) Builder is not fully configured: Cluster: com.twitter.finagle.builder.ClientConfig.Yes, Codec: com.twitter.finagle.builder.ClientConfig.Yes, HostConnectionLimit: Nothing
+builder.build()
+             ^```
+
+						Note:
+						- `Numeric` type class to allow sum on things that can be added
+						- Builder only allows build() when all the configuration has been done
+					</section>
+					<section data-markdown>
 							### Implicits enable
 
 							- DSLs
-							- Passing around type evidence
-							- Dependency Injection at Compile time
+							- Type evidence
 							- Reduce verbosity
 							- Type classes
+							- Dependency Injection at Compile time
 							- Extending libraries
 
 							Note:
@@ -180,7 +255,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					<section data-markdown>
 							### But beware
 
-							- Complicated resolution rules
+							- Resolution rules can be difficult
 							- Automatic conversions
 
 							Note:
@@ -192,11 +267,11 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					</section>
 
 					<section data-markdown>
-						### How?
+						### Demo
 
 						- Implicit conversions (a.k.a. Implicit views)
 							```scala
-							"abc".map(_.toInt)```
+							implicit def a2B(a : A) : B = ...```
 						- Implicit parameters
 							```scala
 							def method(implicit x : Int) = ...```
@@ -207,16 +282,6 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 							```scala
 							implicit val x = ...```
 
-						Note:
-						- `String` has no map defined => `StringOps` does
-					</section>
-					<section data-markdown>
-						### Demo
-
-						+ Implicit conversions
-						+ Implicit parameters
-						+ Implicit classes
-						+ Implicit declarations
 
 						Note:
 						- `ImplicitParameter.sc`

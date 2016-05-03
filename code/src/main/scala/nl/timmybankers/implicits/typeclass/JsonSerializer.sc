@@ -73,8 +73,8 @@ object NicerSerializableModel {
 
   implicit val jsonPayment: JsonWriter[Model.Payment] =
     JsonWriter[Model.Payment](payment =>
-      Map("from" -> payment.fromAccount.name.toJson,
-        "to" -> payment.toAccount.name.toJson,
+      Map("from" -> payment.from.name.toJson,
+        "to" -> payment.to.name.toJson,
         "balance" -> payment.amount.toJson).toJson)
 }
 
