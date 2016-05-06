@@ -26,14 +26,23 @@ giveMeAnInt
 ```
 --
 
+| What happens if we define another implicit `Int`?
+
+```
+implicit val anotherInt : Int = 1337
+
+giveMeAnInt
+```
+
+---
 | Another way to get the implicit value
 
 ```
 implicitly[Int]
 ```
----
+--
 
-| Lets look at the internals
+| Let's look at the internals
 
 ```
 def someCall = giveMeAnInt
@@ -44,6 +53,8 @@ def someCall = giveMeAnInt
 ---
 
 | \gImplicit View
+TODO; Actually talk about implicit view
+http://www.scala-lang.org/old/node/130
 
 ```
 trait StringHelper[A] {
@@ -401,6 +412,8 @@ myAccount.toJson
 
 ---
 | Implicit classes can help us
+
+TODO: Implicit class is syntactic sugar for conversion and view
 
 ```
 implicit class JsonSerializable[T](serializable: T)

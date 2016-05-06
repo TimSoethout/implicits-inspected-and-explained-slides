@@ -160,6 +160,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						### Examples
 
 						- Akka
+
 						```scala
 						trait ScalaActorRef
 							def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = ...
@@ -169,6 +170,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						```
 
 						- Futures
+
 						```scala
 						object Future {
 							def apply[T](body: =>T)(implicit executor: ExecutionContext): Future[T] = ...
@@ -188,12 +190,14 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						### Examples (2)
 
 						- Collections
+
 						```scala
 						trait TraversableOnce[+A] {
 							def sum[B >: A](implicit num: Numeric[B]): B = ...
 						}```
 						```scala
 						List(1,2,3).sum
+						res0: Int = 6
 						```
 
 						Note:
@@ -205,7 +209,8 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- Finagle
 
 						```scala
-						@implicitNotFound("Builder is not fully configured: Cluster: ${HasCluster}, Codec: ${HasCodec}, HostConnectionLimit: ${HasHostConnectionLimit}")
+						@implicitNotFound("Builder is not fully configured: Cluster: ${HasCluster}, Codec: ${HasCodec},
+						                   HostConnectionLimit: ${HasHostConnectionLimit}")
 						private[builder] trait ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit]
 
 						class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] private[finagle](...) {
@@ -224,7 +229,8 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						```
 
 						```
-						Error:(24, 15) Builder is not fully configured: Cluster: com.twitter.finagle.builder.ClientConfig.Yes, Codec: com.twitter.finagle.builder.ClientConfig.Yes, HostConnectionLimit: Nothing
+						Error:(24, 15) Builder is not fully configured: Cluster: com.twitter.finagle.builder.ClientConfig.Yes,
+						  Codec: com.twitter.finagle.builder.ClientConfig.Yes, HostConnectionLimit: Nothing
 builder.build()
              ^```
 
@@ -377,6 +383,7 @@ builder.build()
 						```
 
 						Note:
+						-
 						- Interface that describes behavior
 						- Extending library without changing library code, loose coupling
 						- Ad-hoc polymorphism, where you can pick and choose behaviour to be retrofitted to existing types.
@@ -398,6 +405,7 @@ builder.build()
 						- Typeclass + improvements
 
 						Note:
+						- Adding JSonSerialisable everywhere will clutter your implemetation => High Coupling
 						- `typeclass/Naive.sc`
 						- `typeclass/JsonSerializer.sc`
 					</section>
@@ -458,6 +466,10 @@ builder.build()
 				history: true,
 				center: true,
 				slideNumber: true,
+
+				width: 1440,
+				height: 900,
+				// margin: 0.05,
 
 				transition: 'convex', // none/fade/slide/convex/concave/zoom
 
