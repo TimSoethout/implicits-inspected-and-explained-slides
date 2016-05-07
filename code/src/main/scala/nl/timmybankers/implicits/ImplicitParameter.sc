@@ -17,7 +17,10 @@ implicitly[Int]
 // show with javap -v what happens
 def someCall = giveMeAnInt
 
+// Implicit view
+// TODO make nice code example for implicit view. i.e. File => FileWrapper, Int => RichInt
 
+// Typeclass example
 trait StringHelper[A] {
   def readable(a: A): String
 }

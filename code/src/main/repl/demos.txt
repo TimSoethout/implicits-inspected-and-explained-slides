@@ -49,58 +49,6 @@ def someCall = giveMeAnInt
 ```
 
 :javap -c someCall
-
----
-
-| \gImplicit View
-TODO; Actually talk about implicit view
-http://www.scala-lang.org/old/node/130
-
-```
-trait StringHelper[A] {
-  def show(a: A): String
-}
-
---
-def show[A](a: A)(implicit helper: StringHelper[A]) =
-  helper.show(a)
-
-case class Balance(amount: Int)
-object Balance {
-  implicit val stringHelper: StringHelper[Balance] =
-    new StringHelper[Balance] {
-      override def show(balance: Balance): String =
-        s"EUR ${balance.amount}"
-    }
-}
-```
---
-
-```
-show(Balance(100))(Balance.stringHelper)
-```
---
-| ===
-```
-show(Balance(100))
-```
-
----
-
-| Compiler error when no implicit view is found
-
-```
-show("String")
-```
----
-| Another example
-
-```
-1 to 10
-```
-
-| `to` is defined on `RichInt`
-| and an implicit view is available in `Predef`
 ---
 | \gImplicit Conversion
 
@@ -167,6 +115,21 @@ someDefUsingSeq(javaList)
 import scala.collection.JavaConverters._
 someDefUsingSeq(javaList.asScala)
 ```
+---
+
+| \gImplicit View
+TODO; Actually talk about implicit view
+http://www.scala-lang.org/old/node/130
+
+---
+| Another example
+
+```
+1 to 10
+```
+
+| `to` is defined on `RichInt`
+| and an implicit view is available in `Predef` to convert `Int` to `RichInt`
 ---
 | \gImplicit Class
 
