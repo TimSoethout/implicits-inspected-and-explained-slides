@@ -60,9 +60,10 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides" >
 				<section data-markdown>
+					<script type="text/template">
 					# Implicits Inspected and Explained
 
-					ScalaDays New York 2016
+					ScalaDays 2016 New York
 
 					<!-- At the keynote at Scala Exchange Jessica Kerr mentioned that there is very much documentation for starting and expert Scala developers, but (almost) nothing in between. In this talk I want to demystify implicits.
 Implicits are a fairly advanced feature and a very important aspect of the Scala language. They help with writing concise code and enable lots of DSLs. On the other side they can be very magical for an untrained eye. In this talk we will delve into idiomatic use cases of implicits and how the Scala compiler resolves them. If time allows we will jump into type classes as well. -->
@@ -71,14 +72,15 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 					http://blog.timmybankers.nl
 
+					Outline: Introduction - Implicits - Resolving - Type Classes - Wrap up <!-- .element: class="fragment" data-fragment-index="1" -->
+
 					Note:
-					- Welcome! - mail feedback to tim.soethout@ing.nl
-					- About Programming Language Scala and going into implicits, since this is magic for a lot of people
+					- Welcome!
 					- Many Scala users see implicits everywhere, but their exact use remains a bit magic
 					- Goal of talk is to give you an intuition on how implicits work and where to look when things go haywire.
 					- Target audience is Scala developers, who already know the language and syntax
 					- Outline: Context, Implicits, Scoping, Typeclasses
-					  </script>
+					</script>
 				</section>
 
 			<section>
@@ -147,7 +149,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 						- Use values without explicit reference
 						- OO: _is a_ + _has a_
-						- Implicits add: _is-viewable-as-a_
+						- Implicits add: _is viewable as a_
 						- Loose Coupling, Tight Cohesion
 
 						Note:
@@ -155,6 +157,9 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						- _has a_: members: Animal has a name
 						- Cow is viewable as a Mammal
 						- Enables: Small core interfaces + rich views
+
+						Implicits enable you to use values without explicitly referencing them. This enables you to write less code, and let implicits do the heavy lifting for you. We will see how this can be useful.
+						If we look at Object Orientation, traditionally we see _is a_ and _has a_, respectively 'a Cow _is an_ Animal' and 'an Animal has a name' as field for example. Implicits enable _is viewable as a_ on top of this. This means we can convert values to other more rich values implicitly. This enables small and clean core interfaces and rich views on top of this, resulting in Loose Coupling, but Tight Cohesion.
 					</section>
 					<section data-markdown>
 						### Examples
@@ -184,6 +189,10 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						Note:
 						- implicit to pass in sender from actor context
 						- `ExectutionContext` to handle the thread management
+
+						Let's look at some examples.
+						In Akka when sending a message the tell (bang) is implemented with an implicit parameter `sender`. This enables us to send message to other actors without having to pass in itself in as the sender explicitly.
+						Another example is the implicit `ExecutionContext` when using `Future`s. `ExecutionContext` takes care of all the handing of the threads used by Futures under the hood. The implicit allows you to select a runtime for this once and use it implicitly for all the applicable `Future`s. The interface also allows you pass in another thread handling mechanism explicitly.
 					</section>
 
 					<section data-markdown>
@@ -202,6 +211,8 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 
 						Note:
 						- `Numeric` type class to allow sum on things that can be added
+
+						It is also used in the Scala collections library. For example you can use `sum` on any `TraversableOnce` if there is an implicit available which makes sure we can do `plus` on the elements of the collection. This is an example of a type class.
 					</section>
 					<section data-markdown>
 						### Examples (3)
@@ -237,6 +248,9 @@ builder.build()
 						Note:
 						- `Numeric` type class to allow sum on things that can be added
 						- Builder only allows build() when all the configuration has been done
+						- `@implicitNotFound` custom error message when Implicit was not found.
+
+						This example is a bit more involved. Finagle provides a type safe builder class, which only builds if all the required settings are configured. The `build()` method can only be called when an implicit value is available which proofs that all settings are configured. If we construct a partially configured builder and try to `build()` it, we will get a compile time error. The annotation `@implicitNotFound` provides us with a custom error message when the implicit can not be found.
 					</section>
 					<section data-markdown>
 							### Implicits enable
@@ -249,15 +263,18 @@ builder.build()
 							- Extending libraries
 
 							Note:
+							- Some examples, but there is more
 							- DSLs: reuse standard Scala types and collections by extending them with your library functions
 							- Type evidence can help with creating more type safe interfaces, i.e. in Builders, constraint evidence
-							- Pass in dependencies depending on which implicit is in scope
+							- Pass in dependencies depending on which implicit is in scope, used in Play &amp; Slick
 							- Less writing, more implicit
-							- More:
-								+ Akka ActorRef
-								+ ExecutionContext (futures) - Threadpool management
-								+ Generic Programming, shapeless
-								+ Collections library Scala
+
+							I hope these examples have convinced you of the power of implicits. Implicits allow for a lot more. They can be used to extend types, including all the types in the standard library, allowing for powerful DSLs to be created embedded in the language.
+							They can provide type evidence as we saw in the Finagle builder and also in the `TraversableOnce.sum` example where a `Numeric[B]` had to be available.
+							They allow us to write less by leaving ceremony out, and thus reduce verbosity.
+							Implits enable us to create type classes in Scala, which add features for generic programming and extending of libraries.
+							We can do dependency injection by having different implicits in scope and this is all resolved at compile time.
+							And we can extend libraries or code that is out of our control.
 					</section>
 
 					<section data-markdown>
@@ -270,8 +287,12 @@ builder.build()
 							- Powerful, but can be magical in grasping, IDE support is really handy here
 							- Simple lexical examination not always enough
 							- Be careful with conversions, implicits can help, also when being explicit
-								+ Semantics can be different (List to Stream)
+								+ Semantics can be different (`List` to `Stream` or `Double` to `Int`)
 							- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help.
+
+							But take care. Implicits are a powerful extensions but being less explicit can become more magical. It is not always clear which method or field is being called just by looking at the code. Fortunately IDE's can help here.
+							Also, if values can be converted to values of other types, this can be triggered without you as developer even noticing and can result in doing to much work or possibly worse, automatic translations between types with different semantics, a List to a Stream for example.
+							If you can achieve your goal without implicits do not use them.
 					</section>
 
 					<section data-markdown>
@@ -292,6 +313,7 @@ builder.build()
 
 
 						Note:
+						- Explain how REPLesent works (`r` and `n`)
 						- `ImplicitParameter.sc`
 						- `ImplicitConversion.sc`
 						- `ImplicitClass.sc`
