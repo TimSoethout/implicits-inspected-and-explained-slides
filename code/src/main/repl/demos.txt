@@ -394,41 +394,40 @@ val person = Model.Person("Tim", "Soethout", 27)
 | We define `JsonWriter[T]` for relevant types
 
 ```
-object ModelSerializer {
-  trait JsonWriter[T] {
-    def toJsonString(value: T): String
-  }
+trait JsonWriter[T] {
+  def toJsonString(value: T): String
+}
 
-  implicit val jsonString = new JsonWriter[String] {
-    override def toJsonString(value: String): String = s""""$value""""
-  }
+implicit val jsonString = new JsonWriter[String] {
+  override def toJsonString(value: String): String = s""""$value""""
+}
 
-  implicit val jsonBigDecimal = new JsonWriter[BigDecimal] {
-    override def toJsonString(value: BigDecimal): String = value.toString
-  }
-
-  implicit val jsonAccount = new JsonWriter[Model.Account] {
-    override def toJsonString(value: Model.Account): String = {
-      val jsonString = implicitly[JsonWriter[String]]
-      val jsonBigDecimal = implicitly[JsonWriter[BigDecimal]]
-      s"""{"name": "${jsonString.toJsonString(value.name)}",
-           "balance": "${jsonBigDecimal.toJsonString(value.balance)}"}"""
-    }
+implicit val jsonBigDecimal = new JsonWriter[BigDecimal] {
+  override def toJsonString(value: BigDecimal): String = {
+    val jsonString = implicitly[JsonWriter[String]]
+    jsonString.toJsonString(value.toString)
   }
 }
 ```
 ---
-| Now we can use this implicit to serialize an `Account`
+| Now we can use an implicit to serialize an `Account`
 
 ```
-import ModelSerializer._
+implicit val jsonAccount = new JsonWriter[Model.Account] {
+  override def toJsonString(value: Model.Account): String = {
+    val jsonString = implicitly[JsonWriter[String]]
+    val jsonBigDecimal = implicitly[JsonWriter[BigDecimal]]
+    s"""{"name": ${jsonString.toJsonString(value.name)},
+         "balance": ${jsonBigDecimal.toJsonString(value.balance)}}"""
+  }
+}
 
 val accountWriter = implicitly[JsonWriter[Model.Account]]
 accountWriter.toJsonString(myAccount)
 ```
 --
 
-| Still boilerplatey
+| But it still is a bit boilerplatey
 
 ```
 myAccount.toJson
@@ -498,7 +497,7 @@ person.isInstanceOf[Product]
 
 implicit def jsonProduct: JsonWriter[Product] = {
   // bit of cheating here to get it working for Any
-  implicit val anyProduct: JsonWriter[Any] = JsonWriter(any => any.toString)
+  implicit val anyProduct: JsonWriter[Any] = JsonWriter(any => any.toString.toJson)
   JsonWriter(product => {
     val map = product.getClass.getDeclaredFields.map(_.getName) // field names
       .zip(product.productIterator.to).toMap // zipped with all values

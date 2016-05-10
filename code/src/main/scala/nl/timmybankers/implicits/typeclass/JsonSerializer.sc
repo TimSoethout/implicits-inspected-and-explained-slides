@@ -8,7 +8,7 @@ object Model {
 val myAccount = Model.Account("My Account", 1000)
 val yourAccount = Model.Account("Your Account", 2000)
 val payment = Model.Payment(myAccount, yourAccount, 500)
-val person = Person("Tim", "Soethout", 27)
+val person = Model.Person("Tim", "Soethout", 27)
 
 object ModelSerializer {
   trait JsonWriter[T] {
@@ -20,14 +20,17 @@ object ModelSerializer {
   }
 
   implicit val jsonBigDecimal = new JsonWriter[BigDecimal] {
-    override def toJsonString(value: BigDecimal): String = value.toString
+    override def toJsonString(value: BigDecimal): String = {
+      val jsonString = implicitly[JsonWriter[String]]
+      jsonString.toJsonString(value.toString)
+    }
   }
 
   implicit val jsonAccount = new JsonWriter[Model.Account] {
     override def toJsonString(value: Model.Account): String = {
       val jsonString = implicitly[JsonWriter[String]]
       val jsonBigDecimal = implicitly[JsonWriter[BigDecimal]]
-      s"""{"name": "${jsonString.toJsonString(value.name)}", "balance": "${jsonBigDecimal.toJsonString(value.balance)}"}"""
+      s"""{"name": ${jsonString.toJsonString(value.name)}, "balance": ${jsonBigDecimal.toJsonString(value.balance)}}"""
     }
   }
 }
