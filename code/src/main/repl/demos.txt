@@ -388,7 +388,7 @@ object Model {
 val myAccount = Model.Account("My Account", 1000)
 val yourAccount = Model.Account("Your Account", 2000)
 val payment = Model.Payment(myAccount, yourAccount, 500)
-val person = Person("Tim", "Soethout", 27)
+val person = Model.Person("Tim", "Soethout", 27)
 ```
 ---
 | We define `JsonWriter[T]` for relevant types
@@ -438,8 +438,6 @@ myAccount.toJson
 
 ---
 | Implicit classes can help us
-
-TODO: Implicit class is syntactic sugar for conversion and view
 
 ```
 implicit class JsonSerializable[T](serializable: T)
