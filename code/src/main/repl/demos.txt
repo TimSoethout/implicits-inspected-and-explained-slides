@@ -224,10 +224,7 @@ implicit class RichBalance(val balance: Balance) {
 | Implicit classes can extend other/library types
 
 ---
-
 | \*\bScoping and Resolving
-TODO: add extra example with local implicit
-TODO: add example with companion object with parent/inheritance
 
 ---
 | \gScope
