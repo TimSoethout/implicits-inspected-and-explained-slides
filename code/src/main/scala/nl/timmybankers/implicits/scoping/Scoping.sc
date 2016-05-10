@@ -1,6 +1,9 @@
 // see usage -> same package has precedence
 import nl.timmybankers.implicits.scoping.Examples
 
+// local defined implicit
+Examples.local()
+
 // package object, companion object?
 Examples.implicitlyCaseClass()
 

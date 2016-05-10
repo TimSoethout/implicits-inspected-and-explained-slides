@@ -226,8 +226,11 @@ implicit class RichBalance(val balance: Balance) {
 ---
 
 | \*\bScoping and Resolving
+TODO: add extra example with local implicit
+TODO: add example with companion object with parent/inheritance
+
 ---
-| \gLocal scope
+| \gScope
 
 ```
 case class CaseClass(content: String)
@@ -248,7 +251,30 @@ def findCaseClass(implicit cc: CaseClass) = cc
 
 findCaseClass
 ```
+---
+| \gLocal implicit
 
+```
+case class CaseClass(content: String)
+
+object CaseClass {
+  implicit val cc = CaseClass("defined in companion object")
+}
+
+object Explicit {
+  implicit val explicitCaseClass = CaseClass("defined in object Explicit")
+}
+
+object Wildcard {
+  implicit val wildcardCaseClass = CaseClass("defined in object Wildcard")
+}
+
+def findCaseClass(implicit cc: CaseClass) = cc
+
+implicit val localCaseClass = CaseClass("defined in local val") // <-
+
+findCaseClass
+```
 ---
 
 | \gWildcard import
@@ -325,7 +351,30 @@ import Wildcard._                 // <-
 
 findCaseClass
 ```
+---
+| \gInheritance
 
+```
+case class CaseClass(content: String)
+
+trait Parent {
+  implicit val ccParent = CaseClass("defined in Parent of companion object")
+}
+
+object CaseClass extends Parent
+
+object Explicit {
+  implicit val explicitCaseClass = CaseClass("defined in object Explicit")
+}
+
+object Wildcard {
+  implicit val wildcardCaseClass = CaseClass("defined in object Wildcard")
+}
+
+def findCaseClass(implicit cc: CaseClass) = cc
+
+findCaseClass
+```
 ---
 | \bType Class
 

@@ -10,6 +10,12 @@ object Examples {
     resolve
   }
 
+  def local() = {
+    implicit val localCaseClass = CaseClass("defined in local val")
+
+    resolve
+  }
+
   def wildcard() = {
     import Wildcard._
     resolve
@@ -20,5 +26,7 @@ object Examples {
 //    import Wildcard._
     resolve
   }
+
+
 
 }
