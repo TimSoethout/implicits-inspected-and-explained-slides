@@ -1,3 +1,5 @@
+import scala.language.implicitConversions
+
 def giveMeAnInt(implicit i : Int) = i
 
 // Use it like a normal method
@@ -18,7 +20,35 @@ implicitly[Int]
 def someCall = giveMeAnInt
 
 // Implicit view
-// TODO make nice code example for implicit view. i.e. File => FileWrapper, Int => RichInt
+class StringWrapper(s: String) {
+  def quoted = s""""$s""""
+}
+
+//"my String".quoted
+
+new StringWrapper("my String").quoted
+
+object StringWrapper {
+  implicit def wrapString(s : String): StringWrapper = new StringWrapper(s)
+}
+import StringWrapper.wrapString
+
+"my other String".quoted
+
+def someDefUsingQuotedStrings[T <% StringWrapper](t : T) = t.quoted
+// View bounds are deprecated
+
+someDefUsingQuotedStrings("my String")
+
+// We need to evidence that there is a view of `T` to `StringWrapper`
+def useStringWrapper[T](t : T)(implicit ev: T => StringWrapper) = t.quoted
+
+useStringWrapper("my other string")
+
+//useStringWrapper(42) // no implicit view available
+
+implicit def int2StringWrapper : Int => StringWrapper = i => new StringWrapper(i.toString)
+useStringWrapper(42)
 
 // Typeclass example
 trait StringHelper[A] {
