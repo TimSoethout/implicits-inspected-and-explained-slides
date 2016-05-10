@@ -118,9 +118,72 @@ someDefUsingSeq(javaList.asScala)
 ---
 
 | \gImplicit View
-TODO; Actually talk about implicit view
-http://www.scala-lang.org/old/node/130
 
+| We define a class that wraps/extends another class
+
+```
+class StringWrapper(s: String) {
+  def quoted = s""""$s""""
+}
+```
+
+| We can use it like this
+
+```
+new StringWrapper("my String").quoted
+```
+--
+| But not like this
+```
+"My String".quoted
+```
+---
+
+| We can define a view from `String` to `StringWrapper` as implicit conversion:
+
+```
+object StringWrapper {
+  implicit def wrapString(s : String): StringWrapper = new StringWrapper(s)
+}
+```
+--
+
+| Now it will work
+
+```
+import StringWrapper.wrapString
+
+"My String".quoted
+```
+---
+| Scala < 2.10 allowed View Bounds (now deprecated)
+```
+def someDefUsingQuotedStrings[T <% StringWrapper](t : T) = t.quoted
+
+someDefUsingQuotedStrings("my String")
+```
+--
+
+| Which is just syntactic sugar for a view of `T` to `StringWrapper`
+```
+def useStringWrapper[T](t : T)(implicit ev: T => StringWrapper) = t.quoted
+
+useStringWrapper("my other string")
+```
+---
+| This will only work when an implicit view is available
+```
+useStringWrapper(42)
+```
+--
+
+| Another way of writing the view is providing the `Function`
+```
+implicit def int2StringWrapper : Int => StringWrapper =
+  i => new StringWrapper(i.toString)
+
+useStringWrapper(42)
+```
 ---
 | Another example
 
