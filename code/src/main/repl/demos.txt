@@ -24,16 +24,6 @@ implicit val someInt : Int = 42
 
 giveMeAnInt
 ```
---
-
-| What happens if we define another implicit `Int`?
-
-```
-implicit val anotherInt : Int = 1337
-
-giveMeAnInt
-```
-
 ---
 | Another way to get the implicit value
 
@@ -49,6 +39,15 @@ def someCall = giveMeAnInt
 ```
 
 :javap -c someCall
+--
+
+| What happens if we define another implicit `Int`?
+
+```
+implicit val anotherInt : Int = 1337
+
+giveMeAnInt
+```
 ---
 | \gImplicit Conversion
 
@@ -142,21 +141,17 @@ new StringWrapper("my String").quoted
 | We can define a view from `String` to `StringWrapper` as implicit conversion:
 
 ```
-object StringWrapper {
-  implicit def wrapString(s : String): StringWrapper = new StringWrapper(s)
-}
+implicit def wrapString(s : String): StringWrapper = new StringWrapper(s)
 ```
 --
 
 | Now it will work
 
 ```
-import StringWrapper.wrapString
-
 "My String".quoted
 ```
 ---
-| Scala < 2.10 allowed View Bounds (now deprecated)
+| Scala allowed View Bounds (now deprecated)
 ```
 def someDefUsingQuotedStrings[T <% StringWrapper](t : T) = t.quoted
 
@@ -533,30 +528,9 @@ implicit val jsonPayment: JsonWriter[Model.Payment] =
         "balance" -> payment.amount.toString).toJson)
 
 payment.toJson
-```
----
-| We can even generalize it to work with all Case Classes
-
-```
-person.isInstanceOf[Product]
---
-
-implicit def jsonProduct: JsonWriter[Product] = {
-  // bit of cheating here to get it working for Any
-  implicit val anyProduct: JsonWriter[Any] = JsonWriter(any => any.toString.toJson)
-  JsonWriter(product => {
-    val map = product.getClass.getDeclaredFields.map(_.getName) // field names
-      .zip(product.productIterator.to).toMap // zipped with all values
-    map.toJson
-  })
-}
---
-
-jsonProduct.toJsonString(person)
 
 --
-val personProduct : Product = person
-personProduct.toJson
+| This can be generalised even more with `HList`s, but that is for another talk.
 ```
 ---
 | \b End of demo's
