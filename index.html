@@ -79,6 +79,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 					- Many Scala users see implicits everywhere, but their exact use remains a bit magic
 					- Goal of talk is to give you an intuition on how implicits work and where to look when things go haywire.
 					- Target audience is Scala developers, who already know the language and syntax
+					- We already heard a lot about implicits. Martin emphasised the importance of implicits for the Scala Language in the keynore. Yesterday a lot of the talks in the advanced track used and abused implicits a lot.
 					- Outline: Context, Implicits, Scoping, Typeclasses
 					</script>
 				</section>
@@ -86,16 +87,16 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 			<section>
 				<section data-markdown>
 					<script type="text/template">
-					### Who am I?
+					### About myself
 
 					Tim Soethout
 					- Functional programmer at heart
 					- Scala/FP evangelist/trainer inside ING Bank
 
 						![ING](image/ING_logo.png) <!-- .element: style="width:10em;" -->
-					- PhD Candidate at CWI
+					- PhD Candidate
 
-						![ING](image/CWI.png)  <!-- .element: style="width:10em;" -->
+						<!-- ![ING](image/CWI.png)  <!-/- .element: style="width:10em;" -/-> -->
 
 					Note:
 					- Bachelor CKI, Master Computing Science in Utrecht - Lot's of Haskell
@@ -282,13 +283,14 @@ builder.build()
 
 							- Resolution rules can be difficult
 							- Automatic conversions
+							- Do not overuse
 
 							Note:
 							- Powerful, but can be magical in grasping, IDE support is really handy here
 							- Simple lexical examination not always enough
 							- Be careful with conversions, implicits can help, also when being explicit
 								+ Semantics can be different (`List` to `Stream` or `Double` to `Int`)
-							- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help.
+							- If you do find yourself using implicits, always ask yourself if there is a way to achieve the same thing without their help. Principle of least power - Li Haoyi - which Martin referenced in the keynote
 
 							But take care. Implicits are a powerful extensions but being less explicit can become more magical. It is not always clear which method or field is being called just by looking at the code. Fortunately IDE's can help here.
 							Also, if values can be converted to values of other types, this can be triggered without you as developer even noticing and can result in doing to much work or possibly worse, automatic translations between types with different semantics, a List to a Stream for example.
@@ -405,18 +407,16 @@ builder.build()
 						```
 
 						Note:
-						-
-						- Interface that describes behavior
+						- Term originates from Haskell, because no subtyping, to allow overloading of functions and operators
 						- Extending library without changing library code, loose coupling
-						- Ad-hoc polymorphism, where you can pick and choose behaviour to be retrofitted to existing types.
-						- Know from Haskell: Used to bring polymorphism to type level
-							+ Examples: Comparability, printability, summing up
+							+ Examples: Comparability, printability, summing
 							+ Type class captures common sets of operations
-						- Can be implemented in Scala using implicits
 						- Example sort a collection if elements of collection are comparable
 							+ Can be done by inheritance, interface etc
 							+ But, static and only when writing the element type
 							+ Basically extend the library
+						- Can be implemented in Scala using implicits
+
 					</section>
 
 					<section data-markdown>
@@ -442,15 +442,17 @@ builder.build()
 						### Recap
 
 						- Implicits are powerful
-						- Use your IDE
+						- Be careful with conversions
 						- Implicit precedence: first look local, then in companion/package object
 						- Typeclasses to extend libraries
 
 						### Questions? <!-- .element: class="fragment" data-fragment-index="2" -->
 
 						Note:
-						- Use cases range from DSLs to extending libraries to full blown DI
-						- Typeclasses, extend in Nonintrusive way
+						- Powerful. Allow to write expressive code.
+						- Use cases range from DSLs to extending libraries to full blown DI.
+						- Use your IDE to help spot conversions and see which implicits are used
+						- Typeclasses, extend in Nonintrusive way, enabling loose coupling
 						 </script>
 					</section>
 				</section>
