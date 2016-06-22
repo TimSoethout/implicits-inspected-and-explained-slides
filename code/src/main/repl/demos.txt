@@ -528,9 +528,8 @@ implicit val jsonPayment: JsonWriter[Model.Payment] =
         "balance" -> payment.amount.toString).toJson)
 
 payment.toJson
-
+```
 --
 | This can be generalised even more with `HList`s, but that is for another talk.
-```
 ---
 | \b End of demo's

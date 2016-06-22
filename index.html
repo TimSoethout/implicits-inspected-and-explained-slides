@@ -63,12 +63,12 @@
 					<script type="text/template">
 					# Implicits Inspected and Explained
 
-					ScalaDays 2016 New York
+					ScalaDays 2016 Berlin
 
 					<!-- At the keynote at Scala Exchange Jessica Kerr mentioned that there is very much documentation for starting and expert Scala developers, but (almost) nothing in between. In this talk I want to demystify implicits.
 Implicits are a fairly advanced feature and a very important aspect of the Scala language. They help with writing concise code and enable lots of DSLs. On the other side they can be very magical for an untrained eye. In this talk we will delve into idiomatic use cases of implicits and how the Scala compiler resolves them. If time allows we will jump into type classes as well. -->
 
-					Tim Soethout
+					Tim Soethout - ING Bank
 
 					http://blog.timmybankers.nl
 
@@ -107,6 +107,7 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						+ Scala => JVM
 					- Lightbend/Typesafe certified trainer: Scala &amp; Akka
 					- 3 courses
+
 					@ CWI: Research institute in the Netherlands for Math and Computer Science
 
 					Mention about ING:
@@ -156,11 +157,11 @@ Implicits are a fairly advanced feature and a very important aspect of the Scala
 						Note:
 						- _is a_: extends: Cow is an Animal
 						- _has a_: members: Animal has a name
-						- Cow is viewable as a Mammal
+						- Cow is viewable as a coat hanger
 						- Enables: Small core interfaces + rich views
 
 						Implicits enable you to use values without explicitly referencing them. This enables you to write less code, and let implicits do the heavy lifting for you. We will see how this can be useful.
-						If we look at Object Orientation, traditionally we see _is a_ and _has a_, respectively 'a Cow _is an_ Animal' and 'an Animal has a name' as field for example. Implicits enable _is viewable as a_ on top of this. This means we can convert values to other more rich values implicitly. This enables small and clean core interfaces and rich views on top of this, resulting in Loose Coupling, but Tight Cohesion.
+						If we look at Object Orientation, traditionally we see _is a_ and _has a_, respectively 'a Cow _is an_ Animal' and 'an Animal has a name' as field for example. Implicits enable _is viewable as a_ on top of this. This means we can convert values to other more rich values implicitly. 'a Cow _is viewable as a_ coat hanger'.This enables small and clean core interfaces and rich views on top of this, resulting in Loose Coupling, but Tight Cohesion.
 					</section>
 					<section data-markdown>
 						### Examples
@@ -247,7 +248,6 @@ builder.build()
              ^```
 
 						Note:
-						- `Numeric` type class to allow sum on things that can be added
 						- Builder only allows build() when all the configuration has been done
 						- `@implicitNotFound` custom error message when Implicit was not found.
 
@@ -453,24 +453,32 @@ builder.build()
 						- Use cases range from DSLs to extending libraries to full blown DI.
 						- Use your IDE to help spot conversions and see which implicits are used
 						- Typeclasses, extend in Nonintrusive way, enabling loose coupling
+
+						- Don't forget next slides on code
 						 </script>
 					</section>
 				</section>
 				<section data-markdown>
-						### References
+					## Implicits Inspected and Explained
 
-						[Slides](http://blog.timmybankers.nl/implicits-inspected-and-explained-slides)
-						/
-						[Code](https://github.com/TimSoethout/implicits-inspected-and-explained-slides/tree/gh-pages/code)
+					Tim Soethout @ ScalaDays 2016 Berlin
 
-						- Scala documentation:
-							+ [Java Converters](http://docs.scala-lang.org/overviews/collections/conversions-between-java-and-scala-collections.html)
-							+ [Finding Implicits](http://docs.scala-lang.org/tutorials/FAQ/finding-implicits.html)
-						- Book: [Scala In Depth](https://www.manning.com/books/scala-in-depth)
-						- [Effective Scala](http://twitter.github.io/effectivescala/)
-						- Blog [All Things Runnable](http://lalitpant.blogspot.nl/2008/08/scala-implicits-dose-of-magic-part-1.html)
-						- [Scala Gitter channel](https://gitter.im/scala/scala), special thanks to @Ichoran and @som-snytt
-						- [REPLesent](https://github.com/marconilanna/REPLesent), for the demo slides
+					http://blog.timmybankers.nl
+
+					### References
+
+					[Slides](http://blog.timmybankers.nl/implicits-inspected-and-explained-slides)
+					/
+					[Code](https://github.com/TimSoethout/implicits-inspected-and-explained-slides/tree/gh-pages/code)
+
+					- Scala documentation:
+						+ [Java Converters](http://docs.scala-lang.org/overviews/collections/conversions-between-java-and-scala-collections.html)
+						+ [Finding Implicits](http://docs.scala-lang.org/tutorials/FAQ/finding-implicits.html)
+					- Book: [Scala In Depth](https://www.manning.com/books/scala-in-depth)
+					- [Effective Scala](http://twitter.github.io/effectivescala/)
+					- Blog [All Things Runnable](http://lalitpant.blogspot.nl/2008/08/scala-implicits-dose-of-magic-part-1.html)
+					- [Scala Gitter channel](https://gitter.im/scala/scala), special thanks to @Ichoran and @som-snytt
+					- [REPLesent](https://github.com/marconilanna/REPLesent), for the demo slides
 				</section>
 			</div>
 
@@ -493,6 +501,8 @@ builder.build()
 
 				width: 1440,
 				height: 900,
+				// width: 1366,
+				// height: 767,
 				margin: 0,
 
 				transition: 'convex', // none/fade/slide/convex/concave/zoom
